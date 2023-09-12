@@ -1,4 +1,4 @@
-﻿using Entities;
+﻿using DomainTrackPostPro.Entities;
 
 namespace TrackPostPro.Application.Models
 {

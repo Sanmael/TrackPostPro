@@ -1,24 +1,23 @@
 ﻿using Aplication.Models;
-using Context.Repositories;
 using MediatR;
 using TrackPostPro.Application.Models;
-using Entities;
-using Entities.Interfaces;
+using DomainTrackPostPro.Interfaces;
+using DomainTrackPostPro.Entities;
 
-namespace TrackPostPro.Application.Commands.GetPerson
+namespace TrackPostPro.Application.Commands.PersonCommands.GetPerson
 {
     public class GetPersonCommandHandler : IRequestHandler<GetPersonCommand, BaseResult<PersonViewModel>>
     {
-        private readonly IPersonRepository _personRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public GetPersonCommandHandler(IPersonRepository personRepository)
+        public GetPersonCommandHandler(IUnitOfWork unitOfWork)
         {
-            _personRepository = personRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<BaseResult<PersonViewModel>> Handle(GetPersonCommand request, CancellationToken cancellationToken)
         {
-            Entities.Person personEntity = await _personRepository.GetPersonById(request.Id);
+            Person personEntity = await _unitOfWork.PersonRepository.GetPersonById(request.Id);
 
             if (personEntity == null)
                 return new BaseResult<PersonViewModel>(null, success: false, message: "Pessoa não encontrada.");

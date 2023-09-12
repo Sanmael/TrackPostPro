@@ -1,28 +1,27 @@
-﻿using Aplication.Commands.CreatePerson;
-using Aplication.Models;
-using Entities.Interfaces;
-using Entities;
+﻿using Aplication.Models;
+using DomainTrackPostPro.Interfaces;
 using MediatR;
+using DomainTrackPostPro.Entities;
 
-namespace TrackPostPro.Application.Commands.Person.DeletePerson
+namespace TrackPostPro.Application.Commands.PersonCommands.DeletePerson
 {
     public class DeletePersonCommandHandler : IRequestHandler<DeletePersonCommand, BaseResult<Guid>>
     {
-        private readonly IPersonRepository _personRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public DeletePersonCommandHandler(IPersonRepository personRepository)
+        public DeletePersonCommandHandler(IUnitOfWork unitOfWork)
         {
-            _personRepository = personRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<BaseResult<Guid>> Handle(DeletePersonCommand request, CancellationToken cancellationToken)
         {
-            Entities.Person person = await _personRepository.GetPersonById(request.Id);
+            Person person = await _unitOfWork.PersonRepository.GetPersonById(request.Id);
 
             if (person == null)
                 return new BaseResult<Guid>(Guid.Empty, success:false, message: "Pessoa não encontrada")!;
 
-            await _personRepository.DeletePerson(request.Id);
+            await _unitOfWork.PersonRepository.DeletePerson(request.Id);
 
             return new BaseResult<Guid>(request.Id, message: "Pessoa deletada com sucesso");
         }

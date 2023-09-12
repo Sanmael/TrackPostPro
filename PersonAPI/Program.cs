@@ -1,11 +1,11 @@
-using Aplication.Commands.CreatePerson;
+using Aplication.Commands.PersonCommands.CreatePerson;
 using Context.GenericRepository;
 using Context.Repositories;
 using Context.Session;
 using Context.UOW;
 using DependencyInjectionTrackPostPro;
-using Entities.Interfaces;
-using Entities.Validations;
+using DomainTrackPostPro.Interfaces;
+using DomainTrackPostPro.Validations;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using MediatR;

@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DomainTrackPostPro.Entities;
 
-namespace Entities.Interfaces
+namespace DomainTrackPostPro.Interfaces
 {
     public interface ITokenRepository 
     {

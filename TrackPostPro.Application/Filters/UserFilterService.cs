@@ -1,22 +1,22 @@
-﻿using Entities.Interfaces;
-using Entities;
+﻿using DomainTrackPostPro.Interfaces;
+using DomainTrackPostPro.Entities;
 
 public class UserFilterService
 {
-    private readonly ITokenRepository _tokenRepository;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public UserFilterService(ITokenRepository tokenRepository)
+    public UserFilterService(IUnitOfWork unitOfWork)
     {
-        _tokenRepository = tokenRepository;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<bool> ValidateCredentialsAsync(string userId, string pass)
     {
         try
         {
-            Token token = await _tokenRepository.GetToken(Guid.Parse(userId));
+            Token token = await _unitOfWork.TokenRepository.GetToken(Guid.Parse(userId));
 
-            string hashPass = _tokenRepository.CreateHash(pass, token.TextClear);
+            string hashPass = _unitOfWork.TokenRepository.CreateHash(pass, token.TextClear);
 
             return (token.HashPass == hashPass);
         }

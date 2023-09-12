@@ -1,4 +1,4 @@
-﻿using Aplication.Commands.CreatePerson;
+﻿using Aplication.Commands.PersonCommands.CreatePerson;
 using FluentValidation;
 using TrackPostPro.Application.CustomErrorMessages;
 

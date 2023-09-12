@@ -1,9 +1,8 @@
 ﻿using Aplication.Models;
-using Entities;
 using MediatR;
 using TrackPostPro.Application.Models;
 
-namespace TrackPostPro.Application.Commands.GetAllPerson
+namespace TrackPostPro.Application.Commands.PersonCommands.GetAllPerson
 {
     public class GetAllPersonByNameCommand : IRequest<BaseResult<ListPersonViewModel>>
     {

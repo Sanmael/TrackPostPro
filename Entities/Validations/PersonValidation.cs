@@ -1,24 +1,24 @@
-﻿using Entities.Interfaces;
+﻿using DomainTrackPostPro.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Entities.Validations
+namespace DomainTrackPostPro.Validations
 {
     public class PersonValidation : IPersonValidation
     {
-        private readonly IPersonRepository _personRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public PersonValidation(IPersonRepository personRepository)
+        public PersonValidation(IUnitOfWork unitOfWork)
         {
-            _personRepository = personRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<bool> ValidateExistNamesAsync(string name)
         {
-            var list = await _personRepository.GetPersonListByName(name);
+            var list = await _unitOfWork.PersonRepository.GetPersonListByName(name);
 
             return list.Count >= 2; 
         }

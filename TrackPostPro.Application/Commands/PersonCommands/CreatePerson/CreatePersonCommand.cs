@@ -1,8 +1,8 @@
 ﻿using Aplication.Models;
-using Entities;
+using DomainTrackPostPro.Entities;
 using MediatR;
 
-namespace Aplication.Commands.CreatePerson
+namespace Aplication.Commands.PersonCommands.CreatePerson
 {
     public class CreatePersonCommand : IRequest<BaseResult<Guid>>
     {

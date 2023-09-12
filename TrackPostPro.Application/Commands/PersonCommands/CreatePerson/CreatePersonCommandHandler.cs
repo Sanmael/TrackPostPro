@@ -1,26 +1,21 @@
 ﻿using Aplication.Models;
-using Context.Repositories;
-using Context.UOW;
-using Entities;
-using Entities.Interfaces;
-using Entities.Validations;
+using DomainTrackPostPro.Entities;
+using DomainTrackPostPro.Interfaces;
+using DomainTrackPostPro.Validations;
 using MediatR;
 using System.Collections.Generic;
 
-namespace Aplication.Commands.CreatePerson
+namespace Aplication.Commands.PersonCommands.CreatePerson
 {
     public class CreatePersonCommandHandler : IRequestHandler<CreatePersonCommand, BaseResult<Guid>>
     {
-        private readonly IPersonRepository _personRepository;
-        private readonly ITokenRepository _tokenRepository;
+        
         private readonly IPersonValidation _personValidation;
         private readonly IUnitOfWork _unitOfWork;
 
-        public CreatePersonCommandHandler(IPersonRepository personRepository, IPersonValidation personValidation, ITokenRepository tokenRepository, IUnitOfWork unitOfWork)
+        public CreatePersonCommandHandler( IPersonValidation personValidation, IUnitOfWork unitOfWork)
         {
-            _personRepository = personRepository;
             _personValidation = personValidation;
-            _tokenRepository = tokenRepository;
             _unitOfWork = unitOfWork;
         }
 
@@ -37,9 +32,9 @@ namespace Aplication.Commands.CreatePerson
 
                 _unitOfWork.BeginTransaction();
 
-                await _personRepository.CreatePerson(person);
+                await _unitOfWork.PersonRepository.CreatePerson(person);
 
-                await _tokenRepository.CreateToken(person.Id, request.Password);
+                await _unitOfWork.TokenRepository.CreateToken(person.Id, request.Password);
 
                 _unitOfWork.Commit();
 

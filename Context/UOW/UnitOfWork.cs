@@ -1,20 +1,43 @@
-﻿using Context.GenericRepository;
-using Context.Session;
-using Entities.Interfaces;
-using Microsoft.AspNetCore.Http;
-using System.Data;
-using System.Data.Common;
-using System.Data.SqlClient;
+﻿using Context.Repositories;
+using DomainTrackPostPro.Interfaces;
 
 namespace Context.UOW
 {
     public class UnitOfWork : IUnitOfWork
     {
         private readonly IContext _context;
-
-        public UnitOfWork(IContext context)
+        private IPersonRepository _personRepository;
+        private ITokenRepository _tokenRepository;
+        private ITrackingCodeRepository _trackingCodeRepository;
+        private readonly IGenericRepository _genericRepository;
+        public UnitOfWork(IContext context, IGenericRepository genericRepository)
         {
             _context = context;
+            _genericRepository = genericRepository;
+        }
+
+        public IPersonRepository PersonRepository
+        {
+            get
+            {
+                return _personRepository ?? new PersonRepository(_context, _genericRepository);
+            }
+        }
+
+        public ITokenRepository TokenRepository
+        {
+            get
+            {
+                return _tokenRepository ?? new TokenRepository(_context, _genericRepository);
+            }
+        }
+
+        public ITrackingCodeRepository TrackingCodeRepository
+        {
+            get
+            {
+                return _trackingCodeRepository ?? new TrackingCodeRepository(_context, _genericRepository);
+            }
         }
 
         public void BeginTransaction()

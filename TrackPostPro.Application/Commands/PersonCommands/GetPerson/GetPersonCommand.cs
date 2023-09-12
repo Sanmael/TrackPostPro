@@ -1,9 +1,9 @@
 ﻿using Aplication.Models;
-using Entities;
+using DomainTrackPostPro;
 using MediatR;
 using TrackPostPro.Application.Models;
 
-namespace TrackPostPro.Application.Commands.GetPerson
+namespace TrackPostPro.Application.Commands.PersonCommands.GetPerson
 {
     public class GetPersonCommand : IRequest<BaseResult<PersonViewModel>>
     {

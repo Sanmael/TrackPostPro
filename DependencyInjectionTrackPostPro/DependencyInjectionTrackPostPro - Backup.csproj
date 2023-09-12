@@ -8,8 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Context\Context.csproj" />
-    <ProjectReference Include="..\Entities\DomainTrackPostPro.csproj" />
+    <ProjectReference Include="..\Domain\DomainTrackPostPro.csproj" />
   </ItemGroup>
-
 
 </Project>

@@ -1,9 +1,9 @@
 ﻿using Context.GenericRepository;
 using Context.Session;
 using Dapper;
-using Entities;
-using Entities.Interfaces;
-using Entities.Validations;
+using DomainTrackPostPro.Entities;
+using DomainTrackPostPro.Interfaces;
+using DomainTrackPostPro.Validations;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -11,7 +11,7 @@ using System.Linq.Expressions;
 
 namespace Context.Repositories
 {
-    public class PersonRepository :  IPersonRepository
+    public class PersonRepository : IPersonRepository
     {
         private readonly IContext _context;
         private readonly IGenericRepository _genericRepository;
@@ -24,30 +24,58 @@ namespace Context.Repositories
 
         public async Task CreatePerson(Person person)
         {
-            string query = "INSERT INTO Person (Id, Name, Age) VALUES (@Id, @Name, @Age)";
+            try
+            {
+                string query = "INSERT INTO Person (Id, Name, Age) VALUES (@Id, @Name, @Age)";
 
-            await _genericRepository.Insert<Person>(query, param: new Person { Id = person.Id, Name = person.Name, Age = person.Age });
+                await _genericRepository.Insert<Person>(query, param: person);
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         public async Task DeletePerson(Guid id)
         {
-            //await _dapperRepository.Delete(query: $"Delete from Person where id = '{id}'");
+            try
+            {
+                string query = "DELETE FROM Person WHERE Id = Id";
+                await _genericRepository.Delete(query: query, new { Id = id });
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         public async Task<Person> GetPersonById(Guid id)
         {
-            string sql = "SELECT * FROM Person WHERE Id = @Id";
+            try
+            {
+                string sql = "SELECT * FROM Person WHERE Id = @Id";
 
-            return await _context.DbConnection.QueryFirstOrDefaultAsync<Person>(sql, param: new { Id = id });
+                return await _context.DbConnection.QueryFirstOrDefaultAsync<Person>(sql, param: new { Id = id });
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         public async Task<List<Person>> GetPersonListByName(string name)
         {
-            string sql = $"SELECT * FROM Person WHERE Name Like '%{name}%'";
+            try
+            {
+                string sql = $"SELECT * FROM Person WHERE Name Like '%{name}%'";
 
-            return (List<Person>)await _context.DbConnection.QueryAsync<Person> (sql);
+                return (List<Person>)await _context.DbConnection.QueryAsync<Person>(sql);
+            }
+            catch
+            {
+                throw;
+            }
         }
-
         public Task UpdatePerson(Person person)
         {
             throw new NotImplementedException();

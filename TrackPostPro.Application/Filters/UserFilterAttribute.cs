@@ -1,5 +1,5 @@
-﻿using Entities;
-using Entities.Interfaces;
+﻿using DomainTrackPostPro;
+using DomainTrackPostPro.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 

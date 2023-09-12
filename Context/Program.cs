@@ -1,7 +1,7 @@
 using Context.GenericRepository;
 using Context.Repositories;
-using Entities.Interfaces;
-using Entities.Validations;
+using DomainTrackPostPro.Interfaces;
+using DomainTrackPostPro.Validations;
 
 var builder = WebApplication.CreateBuilder(args);
 

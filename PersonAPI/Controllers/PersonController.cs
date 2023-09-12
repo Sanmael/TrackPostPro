@@ -1,13 +1,11 @@
-﻿using Aplication.Commands.CreatePerson;
+﻿using Aplication.Commands.PersonCommands.CreatePerson;
 using Aplication.Models;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
-using TrackPostPro.Application.Commands.GetAllPerson;
-using TrackPostPro.Application.Commands.GetPerson;
-using TrackPostPro.Application.Commands.Person.DeletePerson;
-using TrackPostPro.Application.Filters;
+using TrackPostPro.Application.Commands.PersonCommands.DeletePerson;
+using TrackPostPro.Application.Commands.PersonCommands.GetAllPerson;
+using TrackPostPro.Application.Commands.PersonCommands.GetPerson;
 using TrackPostPro.Application.Models;
 
 namespace PersonAPI.Controllers

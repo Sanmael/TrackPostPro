@@ -11,12 +11,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Context\Context.csproj" />
-    <ProjectReference Include="..\DependencyInjectionTrackPostPro\DependencyInjectionTrackPostPro.csproj" />
+    <Folder Include="Commands\Address\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Commands\Address\" />
+    <ProjectReference Include="..\Entities\DomainTrackPostPro.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,9 +1,7 @@
 ﻿using Context.Session;
-using Entities.Interfaces;
-using System.Data.SqlClient;
 using System.Data;
 using Dapper;
-using Microsoft.Extensions.Configuration;
+using DomainTrackPostPro.Interfaces;
 
 namespace Context.GenericRepository
 {
