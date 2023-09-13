@@ -12,5 +12,6 @@ namespace DomainTrackPostPro.Interfaces
         public Task CreateToken(Token token);
         public Task<Token> GetToken(Guid personId);
         public Task ResetCredential(Token token);
+        public Task DeleteToken(Token token);
     }
 }

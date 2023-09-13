@@ -72,7 +72,23 @@ namespace TrackPostPro.Application.Service
         {
             Token token = await _tokenRepository.GetToken(personId);
 
-            return new TokenDTO(token.PersonId, token.HashPass,token.TextClear);
+            return new TokenDTO(token.PersonId, token.HashPass, token.TextClear);
+        }
+
+        public async Task DeleteToken(Guid personId)
+        {
+            try
+            {
+                Token token = await _tokenRepository.GetToken(personId);
+
+                if (token != null)
+                    await _tokenRepository.DeleteToken(token);
+            }
+            catch
+            {
+                throw;
+            }
+
         }
     }
 }

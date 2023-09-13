@@ -21,17 +21,15 @@ namespace TrackPostPro.Application.Service
             await _personRepository.CreatePerson(person);
         }
 
-        public async Task<bool> DeletePerson(PersonDTO personDTO)
+        public async Task DeletePerson(PersonDTO personDTO)
         {
             try
             {
                 await _personRepository.DeletePerson(personDTO.Id);
-
-                return true;
             }
             catch
             {
-                return false;
+                throw;
             }
         }
 
@@ -39,9 +37,9 @@ namespace TrackPostPro.Application.Service
         {
             Person person = await _personRepository.GetPersonById(Id);
 
-            if(person == null)            
+            if (person == null)
                 return null;
-            
+
             return new PersonDTO().EntityToDto(person);
         }
 

@@ -32,7 +32,22 @@ namespace Context.Repositories
             {
                 throw;
             }
-        }     
+        }
+
+        public async Task DeleteToken(Token token)
+        {
+            try
+            {
+                string query = "DELETE FROM Token WHERE PersonId = @PersonId";
+
+                await _genericRepository.Delete<Token>(query: query, param: token);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
         public async Task<Token> GetToken(Guid personId)
         {
             try

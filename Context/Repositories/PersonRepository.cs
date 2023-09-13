@@ -40,7 +40,8 @@ namespace Context.Repositories
         {
             try
             {
-                string query = "DELETE FROM Person WHERE Id = Id";
+                string query = "DELETE FROM Person WHERE Id = @Id";
+
                 await _genericRepository.Delete(query: query, new { Id = id });
             }
             catch

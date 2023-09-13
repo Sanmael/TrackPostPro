@@ -6,8 +6,6 @@ namespace Context.UOW
     public class UnitOfWork : IUnitOfWork
     {
         private readonly IContext _context;
-        private IPersonRepository _personRepository;
-        private ITokenRepository _tokenRepository;
         private ITrackingCodeRepository _trackingCodeRepository;
         private readonly IGenericRepository _genericRepository;
         public UnitOfWork(IContext context, IGenericRepository genericRepository)
@@ -15,23 +13,7 @@ namespace Context.UOW
             _context = context;
             _genericRepository = genericRepository;
         }
-
-        public IPersonRepository PersonRepository
-        {
-            get
-            {
-                return _personRepository ?? new PersonRepository(_context, _genericRepository);
-            }
-        }
-
-        public ITokenRepository TokenRepository
-        {
-            get
-            {
-                return _tokenRepository ?? new TokenRepository(_context, _genericRepository);
-            }
-        }
-
+       
         public ITrackingCodeRepository TrackingCodeRepository
         {
             get

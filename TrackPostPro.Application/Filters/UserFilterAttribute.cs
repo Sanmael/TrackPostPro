@@ -21,16 +21,16 @@ namespace TrackPostPro.Application.Filters
             context.ActionArguments["Username"] = userId;
             context.ActionArguments["Password"] = pass;
 
-            Guid.TryParse(userId, out Guid teste);
-            if (teste == Guid.Empty || !_userFilterService.ValidateCredentialsAsync(userId, pass).Result)
-            {
-                context.Result = new ObjectResult("Credenciais inválidas")
-                {
-                    StatusCode = 401
-                };
+            //Guid.TryParse(userId, out Guid teste);
+            //if (teste == Guid.Empty || !_userFilterService.ValidateCredentialsAsync(userId, pass).Result)
+            //{
+            //    context.Result = new ObjectResult("Credenciais inválidas")
+            //    {
+            //        StatusCode = 401
+            //    };
                  
-                return;
-            }
+            //    return;
+            //}
 
             base.OnActionExecuting(context);
         }
