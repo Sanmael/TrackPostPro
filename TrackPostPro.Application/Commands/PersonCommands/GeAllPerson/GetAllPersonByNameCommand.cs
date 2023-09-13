@@ -1,10 +1,10 @@
-﻿using Aplication.Models;
+﻿using Aplication.Response;
 using MediatR;
-using TrackPostPro.Application.Models;
+using TrackPostPro.Application.DTos;
 
 namespace TrackPostPro.Application.Commands.PersonCommands.GetAllPerson
 {
-    public class GetAllPersonByNameCommand : IRequest<BaseResult<ListPersonViewModel>>
+    public class GetAllPersonByNameCommand : IRequest<BaseResult<List<PersonDTO>>>
     {
         public string Name { get; set; }
     }

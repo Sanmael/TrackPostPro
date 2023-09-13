@@ -1,11 +1,11 @@
-﻿using Aplication.Models;
+﻿using Aplication.Response;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TrackPostPro.Application.Commands.TrackingCodeCommands;
 using TrackPostPro.Application.Commands.TrackingCodeCommands.GetTrackingCode;
-using TrackPostPro.Application.Models;
+using TrackPostPro.Application.DTos;
 
 namespace TrackingCodeApi.Controllers
 {
@@ -37,7 +37,7 @@ namespace TrackingCodeApi.Controllers
         {
             TrackingCodeGetCommand command = new TrackingCodeGetCommand() { Code = code };
 
-            BaseResult<TrackingCodeViewModel> result = await _mediator.Send(command);
+            BaseResult<TrackingCodeDTO> result = await _mediator.Send(command);
 
             if (result.Success)
                 return Ok(result.Data);

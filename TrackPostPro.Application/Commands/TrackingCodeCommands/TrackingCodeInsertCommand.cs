@@ -1,6 +1,5 @@
-﻿using Aplication.Models;
+﻿using Aplication.Response;
 using MediatR;
-using TrackPostPro.Application.Models;
 
 namespace TrackPostPro.Application.Commands.TrackingCodeCommands
 {

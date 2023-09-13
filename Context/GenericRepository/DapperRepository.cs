@@ -8,36 +8,21 @@ namespace Context.GenericRepository
     public class DapperRepository : IGenericRepository
     {
         private IContext _context;
-        private readonly IConfiguration _configuration;
 
-        public DapperRepository(IContext context, IConfiguration configuration)
+        public DapperRepository(IContext context)
         {
             _context = context;
-            _configuration = configuration;
         }
-
-        public IDbConnection GetConnection()
-        {
-            if (_context?.DbConnection?.State == ConnectionState.Closed || _context == null)
-            {
-                _context = new DapperSession(_configuration);
-            }
-
-            return _context.DbConnection;
-        }
-
+      
         public async Task Insert<T>(string query, T param)
         {
             try
             {
-                GetConnection();
-
                 await _context.DbConnection.ExecuteAsync(query, param, _context.Transaction);
-
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
 
@@ -45,13 +30,11 @@ namespace Context.GenericRepository
         {
             try
             {
-                GetConnection();
-
                 await _context.DbConnection.ExecuteAsync(query, param, _context.Transaction);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
 
@@ -59,13 +42,11 @@ namespace Context.GenericRepository
         {
             try
             {
-                GetConnection();
-
                 await _context.DbConnection.ExecuteAsync(query, param, _context.Transaction);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
     }

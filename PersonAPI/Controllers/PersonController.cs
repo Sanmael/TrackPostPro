@@ -1,12 +1,12 @@
 ﻿using Aplication.Commands.PersonCommands.CreatePerson;
-using Aplication.Models;
+using Aplication.Response;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using TrackPostPro.Application.Commands.PersonCommands.DeletePerson;
 using TrackPostPro.Application.Commands.PersonCommands.GetAllPerson;
 using TrackPostPro.Application.Commands.PersonCommands.GetPerson;
-using TrackPostPro.Application.Models;
+using TrackPostPro.Application.DTos;
 
 namespace PersonAPI.Controllers
 {
@@ -42,14 +42,14 @@ namespace PersonAPI.Controllers
             if (result.Success)
                 return Ok(result.Data);
 
-            return NotFound(result);
+            return NotFound(result.Message);
         }
         [HttpGet]
         public async Task<IActionResult> GetPersonsByName(string name)
         {
             GetAllPersonByNameCommand query = new GetAllPersonByNameCommand() { Name = name };
 
-            BaseResult<ListPersonViewModel> result = await _mediator.Send(query);
+            BaseResult<List<PersonDTO>> result  = await _mediator.Send(query);
 
             if (result.Success)
                 return Ok(result.Data);
@@ -66,7 +66,7 @@ namespace PersonAPI.Controllers
             if (result.Success)
                 return NoContent();
 
-            return NotFound(result);
+            return NotFound(result.Message);
         }
     }
 }

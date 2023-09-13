@@ -1,4 +1,4 @@
-﻿using Aplication.Models;
+﻿using Aplication.Response;
 using MediatR;
 
 namespace TrackPostPro.Application.Commands.PersonCommands.DeletePerson

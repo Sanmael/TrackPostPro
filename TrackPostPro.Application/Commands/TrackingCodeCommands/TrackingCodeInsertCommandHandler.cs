@@ -1,4 +1,4 @@
-﻿using Aplication.Models;
+﻿using Aplication.Response;
 using DomainTrackPostPro.Entities;
 using DomainTrackPostPro.Interfaces;
 using MediatR;

@@ -1,30 +1,29 @@
-﻿using Aplication.Models;
+﻿using Aplication.Response;
 using MediatR;
-using TrackPostPro.Application.Models;
 using DomainTrackPostPro.Interfaces;
 using DomainTrackPostPro.Entities;
+using TrackPostPro.Application.DTos;
+using TrackPostPro.Application.Interfaces;
 
 namespace TrackPostPro.Application.Commands.PersonCommands.GetPerson
 {
-    public class GetPersonCommandHandler : IRequestHandler<GetPersonCommand, BaseResult<PersonViewModel>>
+    public class GetPersonCommandHandler : IRequestHandler<GetPersonCommand, BaseResult<PersonDTO>>
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IPersonService _personService;
 
-        public GetPersonCommandHandler(IUnitOfWork unitOfWork)
+        public GetPersonCommandHandler(IPersonService personService )
         {
-            _unitOfWork = unitOfWork;
+            _personService = personService;
         }
 
-        public async Task<BaseResult<PersonViewModel>> Handle(GetPersonCommand request, CancellationToken cancellationToken)
+        public async Task<BaseResult<PersonDTO>> Handle(GetPersonCommand request, CancellationToken cancellationToken)
         {
-            Person personEntity = await _unitOfWork.PersonRepository.GetPersonById(request.Id);
+            PersonDTO person = await _personService.GetPersonById(request.Id);
 
-            if (personEntity == null)
-                return new BaseResult<PersonViewModel>(null, success: false, message: "Pessoa não encontrada.");
-
-            PersonViewModel person = new PersonViewModel().MapperEntityToModel(personEntity);
-
-            return new BaseResult<PersonViewModel>(person);
+            if (person == null)
+                return new BaseResult<PersonDTO>(null, success: false, message: "Pessoa não encontrada.");
+             
+            return new BaseResult<PersonDTO>(person);
         }
     }
 }

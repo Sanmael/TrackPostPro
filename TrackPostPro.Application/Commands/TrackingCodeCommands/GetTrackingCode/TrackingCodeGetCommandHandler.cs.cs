@@ -1,12 +1,12 @@
-﻿using Aplication.Models;
+﻿using Aplication.Response;
 using DomainTrackPostPro.Entities;
 using DomainTrackPostPro.Interfaces;
 using MediatR;
-using TrackPostPro.Application.Models;
+using TrackPostPro.Application.DTos;
 
 namespace TrackPostPro.Application.Commands.TrackingCodeCommands.GetTrackingCode
 {
-    public class TrackingCodeGetCommandHandler : IRequestHandler<TrackingCodeGetCommand, BaseResult<TrackingCodeViewModel>>
+    public class TrackingCodeGetCommandHandler : IRequestHandler<TrackingCodeGetCommand, BaseResult<TrackingCodeDTO>>
     {
         private readonly IUnitOfWork _unitOfWork;
 
@@ -14,16 +14,16 @@ namespace TrackPostPro.Application.Commands.TrackingCodeCommands.GetTrackingCode
         {
             _unitOfWork = unitOfWork;
         }
-        public async Task<BaseResult<TrackingCodeViewModel>> Handle(TrackingCodeGetCommand request, CancellationToken cancellationToken)
+        public async Task<BaseResult<TrackingCodeDTO>> Handle(TrackingCodeGetCommand request, CancellationToken cancellationToken)
         {
             TrackingCode trackingCode = await _unitOfWork.TrackingCodeRepository.GetTrackingCodeByCode(request.Code);
 
             if (trackingCode == null)
-                return new BaseResult<TrackingCodeViewModel>(null, success: false, message: "Codigo de Rastreio não encontrado.");
+                return new BaseResult<TrackingCodeDTO>(null, success: false, message: "Codigo de Rastreio não encontrado.");
 
-            TrackingCodeViewModel trackingCodeViewModel = new TrackingCodeViewModel().EntityToDto(trackingCode);
+            TrackingCodeDTO TrackingCodeDTO = new TrackingCodeDTO().EntityToDto(trackingCode);
 
-            return new BaseResult<TrackingCodeViewModel>(trackingCodeViewModel, success: true);
+            return new BaseResult<TrackingCodeDTO>(TrackingCodeDTO, success: true);
         }
     }
 }

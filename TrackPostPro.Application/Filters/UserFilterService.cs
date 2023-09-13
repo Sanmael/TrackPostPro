@@ -1,22 +1,24 @@
 ﻿using DomainTrackPostPro.Interfaces;
 using DomainTrackPostPro.Entities;
+using TrackPostPro.Application.Interfaces;
+using TrackPostPro.Application.DTos;
 
 public class UserFilterService
 {
-    private readonly IUnitOfWork _unitOfWork;
+    private readonly ITokenService _tokenService;
 
-    public UserFilterService(IUnitOfWork unitOfWork)
+    public UserFilterService(ITokenService tokenService)
     {
-        _unitOfWork = unitOfWork;
+        _tokenService = tokenService;
     }
 
     public async Task<bool> ValidateCredentialsAsync(string userId, string pass)
     {
         try
         {
-            Token token = await _unitOfWork.TokenRepository.GetToken(Guid.Parse(userId));
+            TokenDTO token = await _tokenService.GetToken(Guid.Parse(userId));
 
-            string hashPass = _unitOfWork.TokenRepository.CreateHash(pass, token.TextClear);
+            string hashPass = _tokenService.CreateHash(pass, token.TextClear);
 
             return (token.HashPass == hashPass);
         }

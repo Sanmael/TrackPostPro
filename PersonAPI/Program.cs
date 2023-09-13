@@ -13,13 +13,15 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using TrackPostPro.Application.Filters;
+using TrackPostPro.Application.Interfaces;
+using TrackPostPro.Application.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers(options =>
-{            
+{
     options.Filters.Add(typeof(UserFilterAttribute));
 });
 builder.Services.AddControllers().AddFluentValidation(options =>
@@ -34,8 +36,10 @@ builder.Services.AddMediatR(configuration =>
 {
     configuration.RegisterServicesFromAssemblies(typeof(CreatePersonCommand).Assembly);
 });
-builder.Services.AddScoped<UserFilterService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IPersonService, PersonService>();
 
+builder.Services.AddScoped<UserFilterService>();
 Dependences.AddInfrastructure(builder.Services);
 
 var app = builder.Build();

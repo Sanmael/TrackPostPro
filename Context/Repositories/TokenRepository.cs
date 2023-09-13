@@ -11,7 +11,6 @@ namespace Context.Repositories
 {
     public class TokenRepository : ITokenRepository
     {
-        private string _token;
         private readonly IContext _context;
         private readonly IGenericRepository _genericRepository;
 
@@ -21,14 +20,10 @@ namespace Context.Repositories
             _genericRepository = genericRepository;
         }
 
-        public async Task CreateToken(Guid personId, string pass)
+        public async Task CreateToken(Token token)
         {
             try
             {
-                _token = GenerateRandomHash();
-
-                Token token = new Token().NewToken(personId, _token, CreateHash(pass, _token));
-
                 string query = "INSERT INTO Token (Id, Personid, HashPass, TextClear) VALUES (@Id, @PersonId, @HashPass, @TextClear)";
 
                 await _genericRepository.Insert(query: query, param: token);
@@ -37,38 +32,7 @@ namespace Context.Repositories
             {
                 throw;
             }
-        }
-        public string CreateHash(string pass, string textRandom)
-        {
-            using (SHA512 sha512 = SHA512.Create())
-            {
-                byte[] bytes = Encoding.UTF8.GetBytes(textRandom + pass);
-
-                byte[] hashBytes = sha512.ComputeHash(bytes);
-
-                return BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
-            }
-        }
-        private string GenerateRandomHash()
-        {
-            Random random = new Random();
-
-            int length = random.Next(6, 9);
-
-            const string allCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-            StringBuilder hashBuilder = new StringBuilder();
-
-            for (int i = 0; i < length; i++)
-            {
-                int index = random.Next(allCharacters.Length);
-                char randomCharacter = allCharacters[index];
-                hashBuilder.Append(randomCharacter);
-            }
-
-            return hashBuilder.ToString();
-        }
-
+        }     
         public async Task<Token> GetToken(Guid personId)
         {
             try
@@ -83,17 +47,11 @@ namespace Context.Repositories
             }
         }
 
-        public async Task ResetCredential(Guid personId, string pass)
+        public async Task ResetCredential(Token token)
         {
             try
             {
-                _token = GenerateRandomHash();
-
-                Token token = await GetToken(personId);
-
-                token.UpdateToken(_token, CreateHash(pass, _token));
-
-                string query = "Update Token Set TextClear = TextClear , HashPass = HashPass, where PersonId = PersonId";
+                string query = "Update Token Set TextClear = @TextClear , HashPass = @HashPass, where PersonId = @PersonId";
 
                 await _genericRepository.Update<Token>(query: query, param: token);
             }

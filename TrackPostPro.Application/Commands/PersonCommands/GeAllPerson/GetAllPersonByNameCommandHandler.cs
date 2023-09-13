@@ -1,33 +1,30 @@
-﻿using Aplication.Models;
+﻿using Aplication.Response;
 using DomainTrackPostPro.Entities;
 using DomainTrackPostPro.Interfaces;
 using MediatR;
-using TrackPostPro.Application.Models;
+using TrackPostPro.Application.DTos;
+using TrackPostPro.Application.Interfaces;
 
 namespace TrackPostPro.Application.Commands.PersonCommands.GetAllPerson
 {
-    public class GetAllPersonByNameCommandHandler : IRequestHandler<GetAllPersonByNameCommand, BaseResult<ListPersonViewModel>>
+    public class GetAllPersonByNameCommandHandler : IRequestHandler<GetAllPersonByNameCommand, BaseResult<List<PersonDTO>>>
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IPersonService _personService;
 
-        public GetAllPersonByNameCommandHandler(IUnitOfWork unitOfWork)
+        public GetAllPersonByNameCommandHandler(IPersonService personService)
         {
-            _unitOfWork = unitOfWork;
+            _personService = personService;
         }
 
-        public async Task<BaseResult<ListPersonViewModel>> Handle(GetAllPersonByNameCommand request, CancellationToken cancellationToken)
+        public async Task<BaseResult<List<PersonDTO>>> Handle(GetAllPersonByNameCommand request, CancellationToken cancellationToken)
         {
-            List<Person> people = await _unitOfWork.PersonRepository.GetPersonListByName(request.Name);
+            List<PersonDTO> personDTOs = await _personService.GetPersonsByName(request.Name);
 
-            if (!people.Any())
-            {
-                return new BaseResult<ListPersonViewModel>(null, success: false, "Pessoas não encontradas!");
-            }
-            ListPersonViewModel listPersonViewModel = new ListPersonViewModel();
+            if (!personDTOs.Any())
+                return new BaseResult<List<PersonDTO>>(null, success: false, "Pessoas não encontradas!");
 
-            listPersonViewModel.MappingEntityToList(people);
 
-            return new BaseResult<ListPersonViewModel>(listPersonViewModel);
+            return new BaseResult<List<PersonDTO>>(personDTOs);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Aplication.Models
+﻿namespace Aplication.Response
 {
     public class BaseResult
     {

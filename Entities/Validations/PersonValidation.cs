@@ -9,16 +9,16 @@ namespace DomainTrackPostPro.Validations
 {
     public class PersonValidation : IPersonValidation
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IPersonRepository _personRepository;
 
-        public PersonValidation(IUnitOfWork unitOfWork)
+        public PersonValidation(IPersonRepository personRepository)
         {
-            _unitOfWork = unitOfWork;
+            _personRepository = personRepository;
         }
 
         public async Task<bool> ValidateExistNamesAsync(string name)
         {
-            var list = await _unitOfWork.PersonRepository.GetPersonListByName(name);
+            var list = await _personRepository.GetPersonListByName(name);
 
             return list.Count >= 2; 
         }

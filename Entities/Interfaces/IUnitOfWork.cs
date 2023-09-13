@@ -11,8 +11,6 @@ namespace DomainTrackPostPro.Interfaces
         public void BeginTransaction();
         public void Commit();
         public void Rollback();
-        public IPersonRepository PersonRepository { get; }
-        public ITokenRepository TokenRepository { get; }
         public ITrackingCodeRepository TrackingCodeRepository { get; }
     }
 }
