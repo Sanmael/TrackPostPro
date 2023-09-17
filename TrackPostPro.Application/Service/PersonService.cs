@@ -1,5 +1,7 @@
-﻿using DomainTrackPostPro.Entities;
+﻿using Context.Repositories;
+using DomainTrackPostPro.Entities;
 using DomainTrackPostPro.Interfaces;
+using System.Transactions;
 using TrackPostPro.Application.DTos;
 using TrackPostPro.Application.Interfaces;
 
@@ -8,17 +10,32 @@ namespace TrackPostPro.Application.Service
     public class PersonService : IPersonService
     {
         private readonly IPersonRepository _personRepository;
+        private readonly ITokenService _tokenService;
+        private readonly IAddresService _addresService;
 
-        public PersonService(IPersonRepository personRepository)
+        public PersonService(IPersonRepository personRepository, ITokenService tokenService, IAddresService addresService)
         {
             _personRepository = personRepository;
+            _tokenService = tokenService;
+            _addresService = addresService;
         }
 
         public async Task CreatePerson(PersonDTO personDTO)
         {
-            Person person = personDTO.MapperToEntity();
+            try
+            {
+                Person person = personDTO.MapperToEntity();
 
-            await _personRepository.CreatePerson(person);
+                await _personRepository.CreatePerson(person);
+
+                await _tokenService.CreateToken(personDTO.Token);
+
+                await _addresService.CreateNewAddres(personDTO.Address);
+            }
+            catch(Exception) 
+            {                
+                throw;
+            }
         }
 
         public async Task DeletePerson(PersonDTO personDTO)

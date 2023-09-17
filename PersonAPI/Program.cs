@@ -1,4 +1,5 @@
 using Aplication.Commands.PersonCommands.CreatePerson;
+using Context.Repositories;
 using DependencyInjectionTrackPostPro;
 using FluentValidation.AspNetCore;
 using TrackPostPro.Application.Filters;
@@ -28,7 +29,9 @@ builder.Services.AddMediatR(configuration =>
 
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IPersonService, PersonService>();
+builder.Services.AddScoped<ILoggerService, LoggerService >();
 builder.Services.AddScoped<UserFilterService>();
+builder.Services.AddScoped<IAddresService, AddressService>();
 
 Dependences.AddInfrastructure(builder.Services);
 

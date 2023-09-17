@@ -1,10 +1,12 @@
 ﻿using Aplication.Response;
+using Context.Repositories;
 using DomainTrackPostPro.Entities;
 using DomainTrackPostPro.Interfaces;
 using DomainTrackPostPro.Validations;
 using MediatR;
 using System;
 using System.Collections.Generic;
+using System.Xml.Linq;
 using TrackPostPro.Application.DTos;
 using TrackPostPro.Application.Interfaces;
 
@@ -15,21 +17,22 @@ namespace Aplication.Commands.PersonCommands.CreatePerson
 
         private readonly IPersonValidation _personValidation;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ITokenService _tokenService;
         private readonly IPersonService _personService;
+        private readonly ILoggerService _loggerService;
 
-        public CreatePersonCommandHandler(IPersonValidation personValidation, IUnitOfWork unitOfWork, ITokenService tokenService, IPersonService personService)
+        public CreatePersonCommandHandler(IPersonValidation personValidation, IUnitOfWork unitOfWork, IPersonService personService, ILoggerService loggerService)
         {
             _personValidation = personValidation;
             _unitOfWork = unitOfWork;
-            _tokenService = tokenService;
             _personService = personService;
+            _loggerService = loggerService;
         }
 
         public async Task<BaseResult<Guid>> Handle(CreatePersonCommand request, CancellationToken cancellationToken)
         {
             try
             {
+
                 bool nameExceededLimit = await _personValidation.ValidateExistNamesAsync(request.Name);
 
                 if (nameExceededLimit)
@@ -37,21 +40,20 @@ namespace Aplication.Commands.PersonCommands.CreatePerson
 
                 _unitOfWork.BeginTransaction();
 
-                PersonDTO person = new PersonDTO(request.Name,request.Age);
+                PersonDTO person = new PersonDTO(request.Name, request.Age, request.Password, request.City, request.State, request.PostalCode, request.Neighborhood, request.PublicPlace);                
 
                 await _personService.CreatePerson(person);
-
-                TokenDTO token = new TokenDTO(person.Id, request.Password);
-
-                await _tokenService.CreateToken(token);
-
+              
                 _unitOfWork.Commit();
 
                 return new BaseResult<Guid>(person.Id, message: "Pessoa criada com sucesso");
             }
-            catch
+            catch(Exception ex) 
             {
-                _unitOfWork.Rollback();
+                _unitOfWork.Rollback();                
+
+                await _loggerService.SaveLog(ex, ex.Message, ex.TargetSite!.DeclaringType!.DeclaringType!.Name);
+
                 throw;
             }
         }

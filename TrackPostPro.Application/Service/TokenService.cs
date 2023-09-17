@@ -10,7 +10,6 @@ namespace TrackPostPro.Application.Service
     public class TokenService : ITokenService
     {
         private readonly ITokenRepository _tokenRepository;
-        private string _token;
         private const string AllCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
         public TokenService(ITokenRepository tokenRepository)
@@ -20,9 +19,9 @@ namespace TrackPostPro.Application.Service
 
         public async Task CreateToken(TokenDTO tokenDTO)
         {
-            _token = GenerateRandomHash();
+            string hashToken = GenerateRandomHash();
 
-            Token token = new Token().NewToken(tokenDTO.PersonId, _token, CreateHash(tokenDTO.HashPass, _token));
+            Token token = new Token().NewToken(tokenDTO.PersonId, hashToken, CreateHash(tokenDTO.HashPass, hashToken));
 
             await _tokenRepository.CreateToken(token);
         }
@@ -57,13 +56,13 @@ namespace TrackPostPro.Application.Service
 
         public async Task ResetTokenAsync(TokenDTO tokenDTO)
         {
-            _token = GenerateRandomHash();
+            string hashToken = GenerateRandomHash();
 
             tokenDTO = await GetToken(tokenDTO.PersonId);
 
             Token token = new Token();
 
-            token.UpdateToken(_token, CreateHash(tokenDTO.HashPass, _token));
+            token.UpdateToken(hashToken, CreateHash(tokenDTO.HashPass, hashToken));
 
             await _tokenRepository.ResetCredential(token);
         }

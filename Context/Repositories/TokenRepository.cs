@@ -1,11 +1,6 @@
-﻿using Context.GenericRepository;
-using Context.Session;
-using Dapper;
+﻿using Dapper;
 using DomainTrackPostPro.Entities;
 using DomainTrackPostPro.Interfaces;
-using System;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace Context.Repositories
 {
@@ -24,9 +19,7 @@ namespace Context.Repositories
         {
             try
             {
-                string query = "INSERT INTO Token (Id, Personid, HashPass, TextClear) VALUES (@Id, @PersonId, @HashPass, @TextClear)";
-
-                await _genericRepository.Insert(query: query, param: token);
+                await _genericRepository.Insert(param: token);
             }
             catch
             {
@@ -38,9 +31,7 @@ namespace Context.Repositories
         {
             try
             {
-                string query = "DELETE FROM Token WHERE PersonId = @PersonId";
-
-                await _genericRepository.Delete<Token>(query: query, param: token);
+                await _genericRepository.Delete<Token>(param: token);
             }
             catch
             {

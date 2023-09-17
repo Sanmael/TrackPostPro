@@ -1,11 +1,11 @@
 ﻿using Aplication.Commands.PersonCommands.CreatePerson;
 using Aplication.Response;
-using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using TrackPostPro.Application.Commands.PersonCommands.DeletePerson;
 using TrackPostPro.Application.Commands.PersonCommands.GetAllPerson;
 using TrackPostPro.Application.Commands.PersonCommands.GetPerson;
+using TrackPostPro.Application.CustomMessages;
 using TrackPostPro.Application.DTos;
 
 namespace PersonAPI.Controllers
@@ -15,7 +15,6 @@ namespace PersonAPI.Controllers
     public class PersonController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly IValidator<CreatePersonCommand> _validator;
 
         public PersonController(IMediator mediator)
         {
@@ -25,12 +24,23 @@ namespace PersonAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateNewPersonAsync(CreatePersonCommand query)
         {
-            BaseResult<Guid> result = await _mediator.Send(query);
+            try
+            {
+                BaseResult<Guid> result = await _mediator.Send(query);
 
-            if (result.Success)
-                return CreatedAtAction(nameof(GetPersonById), new { id = result.Data }, result);
+                if (result.Success)
+                    return CreatedAtAction(nameof(GetPersonById), new { id = result.Data }, result);
 
-            return BadRequest(result.Message);
+                return BadRequest(result.Message);
+            }
+            catch (TrackPostPro.Application.ValidationErrorLogs.ValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError ,ErrorMessage.InternalServerErrorMessage);
+            }
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPersonById(Guid id)
@@ -49,7 +59,7 @@ namespace PersonAPI.Controllers
         {
             GetAllPersonByNameCommand query = new GetAllPersonByNameCommand() { Name = name };
 
-            BaseResult<List<PersonDTO>> result  = await _mediator.Send(query);
+            BaseResult<List<PersonDTO>> result = await _mediator.Send(query);
 
             if (result.Success)
                 return Ok(result.Data);

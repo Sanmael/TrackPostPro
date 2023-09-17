@@ -1,6 +1,6 @@
 ﻿using Aplication.Commands.PersonCommands.CreatePerson;
 using FluentValidation;
-using TrackPostPro.Application.CustomErrorMessages;
+using TrackPostPro.Application.CustomMessages;
 
 namespace PersonAPI.FluentValidation
 {

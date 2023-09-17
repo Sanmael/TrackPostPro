@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,7 +11,6 @@ namespace DomainTrackPostPro.Interfaces
     {
         public void BeginTransaction();
         public void Commit();
-        public void Rollback();
-        public ITrackingCodeRepository TrackingCodeRepository { get; }
+        public void Rollback();        
     }
 }

@@ -15,8 +15,10 @@ namespace DependencyInjectionTrackPostPro
             services.AddScoped<ITokenRepository, TokenRepository>();
             services.AddScoped<IPersonValidation, PersonValidation>();            
             services.AddScoped<IPersonRepository, PersonRepository>();            
-            services.AddTransient<IContext,DapperSession>();
-            services.AddSingleton<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<ILoggerRepository, LoggerRepository>();            
+            services.AddScoped<IAddressRepository, AddressRepository>();
+            services.AddScoped<IContext,DapperSession>();
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
 
             return services;
         }

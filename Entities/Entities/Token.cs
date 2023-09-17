@@ -9,8 +9,8 @@ namespace DomainTrackPostPro.Entities
     public class Token : BaseEntity
     {
         public Guid PersonId { get; set; }
-        public string TextClear { get; set; }
-        public string HashPass { get; set; }
+        public string TextClear { get; set; } = "";
+        public string HashPass { get; set; } = "";
 
         public Token NewToken(Guid personId, string textClear, string hashPass)
         {

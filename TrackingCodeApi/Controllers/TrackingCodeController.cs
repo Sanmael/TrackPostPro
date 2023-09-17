@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TrackPostPro.Application.Commands.TrackingCodeCommands;
 using TrackPostPro.Application.Commands.TrackingCodeCommands.GetTrackingCode;
+using TrackPostPro.Application.CustomMessages;
 using TrackPostPro.Application.DTos;
 
 namespace TrackingCodeApi.Controllers
@@ -21,16 +22,27 @@ namespace TrackingCodeApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateNewTrackingCode(Guid personId , string code)
+        public async Task<IActionResult> CreateNewTrackingCode(Guid personId, string code)
         {
-            TrackingCodeInsertCommand command = new TrackingCodeInsertCommand() { PersonId = personId , Code = code};
+            try
+            {
+                TrackingCodeInsertCommand command = new TrackingCodeInsertCommand() { PersonId = personId, Code = code };
 
-            BaseResult<Guid> result = await _mediator.Send(command);
+                BaseResult<Guid> result = await _mediator.Send(command);
 
-            if (result.Success)
-                return CreatedAtAction(result.Message, result);
+                if (result.Success)
+                    return CreatedAtAction(result.Message, result);
 
-            return BadRequest(result.Message);        
+                return BadRequest(result.Message);
+            }
+            catch (TrackPostPro.Application.ValidationErrorLogs.ValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ErrorMessage.InternalServerErrorMessage);
+            }
         }
         [HttpGet]
         public async Task<IActionResult> GetTrackingCodeByCode(string code)

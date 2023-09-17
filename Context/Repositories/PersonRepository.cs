@@ -7,6 +7,7 @@ using DomainTrackPostPro.Validations;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq.Expressions;
 
 namespace Context.Repositories
@@ -26,9 +27,7 @@ namespace Context.Repositories
         {
             try
             {
-                string query = "INSERT INTO Person (Id, Name, Age) VALUES (@Id, @Name, @Age)";
-
-                await _genericRepository.Insert<Person>(query, param: person);
+                await _genericRepository.Insert(param: person);
             }
             catch
             {
@@ -40,9 +39,7 @@ namespace Context.Repositories
         {
             try
             {
-                string query = "DELETE FROM Person WHERE Id = @Id";
-
-                await _genericRepository.Delete(query: query, new { Id = id });
+                await _genericRepository.Delete(new { Id = id });
             }
             catch
             {

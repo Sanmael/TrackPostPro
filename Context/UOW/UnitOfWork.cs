@@ -1,27 +1,17 @@
 ﻿using Context.Repositories;
 using DomainTrackPostPro.Interfaces;
+using System.Data;
 
 namespace Context.UOW
 {
     public class UnitOfWork : IUnitOfWork
     {
         private readonly IContext _context;
-        private ITrackingCodeRepository _trackingCodeRepository;
-        private readonly IGenericRepository _genericRepository;
-        public UnitOfWork(IContext context, IGenericRepository genericRepository)
+        public UnitOfWork(IContext context)
         {
             _context = context;
-            _genericRepository = genericRepository;
         }
-       
-        public ITrackingCodeRepository TrackingCodeRepository
-        {
-            get
-            {
-                return _trackingCodeRepository ?? new TrackingCodeRepository(_context, _genericRepository);
-            }
-        }
-
+           
         public void BeginTransaction()
         {
             _context.Transaction = _context.DbConnection.BeginTransaction();
@@ -40,5 +30,6 @@ namespace Context.UOW
         }
 
         public void Dispose() => _context.Transaction?.Dispose();
+
     }
 }

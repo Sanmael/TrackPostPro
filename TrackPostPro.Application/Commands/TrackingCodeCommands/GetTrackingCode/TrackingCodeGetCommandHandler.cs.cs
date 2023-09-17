@@ -16,14 +16,14 @@ namespace TrackPostPro.Application.Commands.TrackingCodeCommands.GetTrackingCode
         }
         public async Task<BaseResult<TrackingCodeDTO>> Handle(TrackingCodeGetCommand request, CancellationToken cancellationToken)
         {
-            TrackingCode trackingCode = await _unitOfWork.TrackingCodeRepository.GetTrackingCodeByCode(request.Code);
+            //TrackingCode trackingCode = await _unitOfWork.TrackingCodeRepository.GetTrackingCodeByCode(request.Code);
 
-            if (trackingCode == null)
+            //if (trackingCode == null)
                 return new BaseResult<TrackingCodeDTO>(null, success: false, message: "Codigo de Rastreio não encontrado.");
 
-            TrackingCodeDTO TrackingCodeDTO = new TrackingCodeDTO().EntityToDto(trackingCode);
+            //TrackingCodeDTO TrackingCodeDTO = new TrackingCodeDTO().EntityToDto(trackingCode);
 
-            return new BaseResult<TrackingCodeDTO>(TrackingCodeDTO, success: true);
+            //return new BaseResult<TrackingCodeDTO>(TrackingCodeDTO, success: true);
         }
     }
 }

@@ -10,7 +10,7 @@ namespace DomainTrackPostPro.Entities
     public class TrackingCode : BaseEntity
     {        
         public Guid PersonId { get; set; }
-        public string Code { get; set; }
+        public string Code { get; set; } = "";
         public TrackingCodeStatus Status { get; set; }
         public DateTime NextSearch { get; set; }
         public int NumberOfTries { get; set; }

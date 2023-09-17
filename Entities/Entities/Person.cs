@@ -8,15 +8,16 @@ namespace DomainTrackPostPro.Entities
 {
     public class Person : BaseEntity
     {
-        public string? Name { get; set; }
+        public string Name { get; set; } = "";
         public int Age { get; set; }
-        public Person CreateNewPerson(string name, int age)
+        public Person CreateNewPerson(Guid id ,string name, int age)
         {
-            Id = Guid.NewGuid();
+            Id = id;
             CreationDate = DateTime.Now;
             UpdateDate = DateTime.Now;
             Name = name;
             Age = age;
+
             return this;
         }
     }

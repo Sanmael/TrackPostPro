@@ -22,7 +22,7 @@ namespace TrackPostPro.Application.Commands.TrackingCodeCommands
 
                 _unitOfWork.BeginTransaction();
 
-                await _unitOfWork.TrackingCodeRepository.CreateTrackingCode(trackingCode);
+                //await _unitOfWork.TrackingCodeRepository.CreateTrackingCode(trackingCode);
 
                 _unitOfWork.Commit();
 

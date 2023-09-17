@@ -1,7 +1,8 @@
-﻿using Context.Session;
-using System.Data;
+﻿using System.Data;
+using System.Reflection;
 using Dapper;
 using DomainTrackPostPro.Interfaces;
+using static Dapper.SqlMapper;
 
 namespace Context.GenericRepository
 {
@@ -14,11 +15,13 @@ namespace Context.GenericRepository
             _context = context;
         }
       
-        public async Task Insert<T>(string query, T param)
+        public async Task Insert<T>(T param)
         {
             try
             {
-                await _context.DbConnection.ExecuteAsync(query, param, _context.Transaction);
+                string sql = $"INSERT INTO {typeof(T).Name} ({GetColumns<T>()}) VALUES ({GetParameters<T>()})";
+
+                await _context.DbConnection.ExecuteAsync(sql, param, _context.Transaction);
             }
             catch (Exception)
             {
@@ -38,16 +41,31 @@ namespace Context.GenericRepository
             }
         }
 
-        public async Task Delete<T>(string query, T param)
+        public async Task Delete<T>(T param)
         {
             try
             {
-                await _context.DbConnection.ExecuteAsync(query, param, _context.Transaction);
+                string sql = $"DELETE FROM {typeof(T).Name} WHERE Id = @Id";
+
+                var id = typeof(T).GetProperty("Id")!.GetValue(param, null);
+
+                await _context.DbConnection.ExecuteAsync(sql, param, _context.Transaction);
             }
             catch (Exception)
             {
                 throw;
             }
+        }
+        private string GetColumns<T>()
+        {
+            PropertyInfo[] properties = typeof(T).GetProperties();
+            return string.Join(", ", properties.Select(p => p.Name));
+        }
+
+        private string GetParameters<T>()
+        {
+            PropertyInfo[] properties = typeof(T).GetProperties();
+            return string.Join(", ", properties.Select(p => $"@{p.Name}"));
         }
     }
 }

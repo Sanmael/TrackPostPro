@@ -18,9 +18,8 @@ namespace Context.Repositories
         {
             try
             {
-                string query = "INSERT INTO TrackingCode (Id,CreationDate,UpdateDate,PersonId,Code,Status,NextSearch,NumberOfTries) Values (@Id,@CreationDate,@UpdateDate,@PersonId,@Code,@Status,@NextSearch,@NumberOfTries)";
 
-                await _genericRepository.Insert(query: query, param: trackingCode);
+                await _genericRepository.Insert(param: trackingCode);
             }
             catch
             {
