@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 namespace DomainTrackPostPro.Interfaces
 {
     public interface IPersonValidation
-    {
-        public Task<bool> ValidateExistNamesAsync(string name);
+    {        
     }
 }

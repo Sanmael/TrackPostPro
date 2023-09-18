@@ -21,7 +21,7 @@ namespace TrackPostPro.Application.Service
         {
             string hashToken = GenerateRandomHash();
 
-            Token token = new Token().NewToken(tokenDTO.PersonId, hashToken, CreateHash(tokenDTO.HashPass, hashToken));
+            Token token = new Token(tokenDTO.PersonId, hashToken, CreateHash(tokenDTO.HashPass, hashToken));
 
             await _tokenRepository.CreateToken(token);
         }
@@ -56,11 +56,9 @@ namespace TrackPostPro.Application.Service
 
         public async Task ResetTokenAsync(TokenDTO tokenDTO)
         {
+            Token token = await _tokenRepository.GetToken(tokenDTO.PersonId);
+
             string hashToken = GenerateRandomHash();
-
-            tokenDTO = await GetToken(tokenDTO.PersonId);
-
-            Token token = new Token();
 
             token.UpdateToken(hashToken, CreateHash(tokenDTO.HashPass, hashToken));
 

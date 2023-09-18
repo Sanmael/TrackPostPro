@@ -14,13 +14,6 @@ namespace DomainTrackPostPro.Validations
         public PersonValidation(IPersonRepository personRepository)
         {
             _personRepository = personRepository;
-        }
-
-        public async Task<bool> ValidateExistNamesAsync(string name)
-        {
-            var list = await _personRepository.GetPersonListByName(name);
-
-            return list.Count >= 2; 
-        }
+        }       
     }
 }

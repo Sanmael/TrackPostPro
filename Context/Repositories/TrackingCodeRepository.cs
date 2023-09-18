@@ -19,7 +19,7 @@ namespace Context.Repositories
             try
             {
 
-                await _genericRepository.Insert(param: trackingCode);
+                await _genericRepository.Insert(trackingCode);
             }
             catch
             {

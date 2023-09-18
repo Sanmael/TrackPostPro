@@ -1,4 +1,5 @@
 ﻿using DomainTrackPostPro.Entities;
+using System.Text.Json.Serialization;
 
 namespace TrackPostPro.Application.DTos
 {
@@ -7,6 +8,7 @@ namespace TrackPostPro.Application.DTos
         public Guid Id { get; set; }
         public string Name { get; set; }
         public int Age { get; set; }
+        [JsonIgnore] 
         public TokenDTO Token { get; set; }
         public AddressDTO Address { get; set; }
         public PersonDTO(string name, int age,string pass, string city, string state, string postalCode, string neighborhood, string publicPlace)
@@ -22,7 +24,7 @@ namespace TrackPostPro.Application.DTos
             
         }
        
-        public Person MapperToEntity() => new Person().CreateNewPerson(Id,Name, Age);
+        public Person MapperToEntity() => new Person(Id,Name, Age);
 
         public PersonDTO EntityToDto(Person person)
         {

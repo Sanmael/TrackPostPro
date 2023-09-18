@@ -9,8 +9,8 @@ namespace DomainTrackPostPro.Interfaces
 {
     public interface IGenericRepository
     {
-        public Task Insert<T>(T param);
-        public Task Update<T>(string query,T param);
-        public Task Delete<T>(T param);
+        public Task Insert<T>(T entity);
+        public Task Update<T>(string query,T entity);
+        public Task Delete<T>(T entity);
     }
 }

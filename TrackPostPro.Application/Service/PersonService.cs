@@ -57,7 +57,11 @@ namespace TrackPostPro.Application.Service
             if (person == null)
                 return null;
 
-            return new PersonDTO().EntityToDto(person);
+            PersonDTO personDTO = new PersonDTO().EntityToDto(person);
+
+            personDTO.Address = await _addresService.GetAddressByPersonId(person.Id);
+
+            return personDTO;
         }
 
         public async Task<List<PersonDTO>> GetPersonsByName(string name)

@@ -9,12 +9,9 @@ namespace TrackPostPro.Application.Service
     public class AddressService : IAddresService
     {
         private readonly IAddressRepository _addressRepository;
-        private readonly ILoggerRepository _loggerRepository;
-
-        public AddressService(IAddressRepository addressRepository, ILoggerRepository loggerRepository)
+        public AddressService(IAddressRepository addressRepository)
         {
             _addressRepository = addressRepository;
-            _loggerRepository = loggerRepository;
         }
 
         public async Task CreateNewAddres(AddressDTO addressDTO)
@@ -24,6 +21,23 @@ namespace TrackPostPro.Application.Service
                 Address address = new Address(addressDTO.PersonId, addressDTO.City, addressDTO.State, addressDTO.PostalCode, addressDTO.Neighborhood, addressDTO.PublicPlace, isPrincipalAddress: true);
 
                 await _addressRepository.CreateNewAddress(address);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<AddressDTO?> GetAddressByPersonId(Guid personId)
+        {
+            try
+            {
+                Address? address = await _addressRepository.GetAddressByPersonId(personId);
+
+                if (address == null)
+                    return null;
+
+                return new AddressDTO().EntityToDto(address.Id,address.PersonId, address.City, address.State, address.PostalCode, address.Neighborhood, address.PublicPlace);
             }
             catch (Exception)
             {

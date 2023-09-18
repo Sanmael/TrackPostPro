@@ -27,7 +27,7 @@ namespace Context.Repositories
         {
             try
             {
-                await _genericRepository.Insert(param: person);
+                await _genericRepository.Insert(person);
             }
             catch
             {

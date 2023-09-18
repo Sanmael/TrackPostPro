@@ -11,14 +11,21 @@ namespace DependencyInjectionTrackPostPro
     {
         public static IServiceCollection AddInfrastructure(IServiceCollection services)
         {
+            //repositories
             services.AddScoped<IGenericRepository, DapperRepository>();
             services.AddScoped<ITokenRepository, TokenRepository>();
-            services.AddScoped<IPersonValidation, PersonValidation>();            
             services.AddScoped<IPersonRepository, PersonRepository>();            
             services.AddScoped<ILoggerRepository, LoggerRepository>();            
             services.AddScoped<IAddressRepository, AddressRepository>();
+
+            //conection
             services.AddScoped<IContext,DapperSession>();
+            
+            //transaction
             services.AddTransient<IUnitOfWork, UnitOfWork>();
+
+            //validations
+            services.AddScoped<IPersonValidation, PersonValidation>();
 
             return services;
         }

@@ -8,12 +8,11 @@ namespace DomainTrackPostPro.Entities
 {
     public class ErrorLog
     {
-        public Guid Id { get; set; }
-        public string ServiceName { get; set; }
-        public DateTime Timestamp { get; set; }
-        public string Message { get; set; }
-        public string StackTrace { get; set; }
-
+        public Guid Id { get; private set; }
+        public string ServiceName { get; private set; }
+        public DateTime Timestamp { get; private set; }
+        public string Message { get; private set; }
+        public string StackTrace { get; private set; }
         public ErrorLog(DateTime timestamp, string message, string stackTrace, string serviceName)
         {
             Id = Guid.NewGuid();

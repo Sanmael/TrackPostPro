@@ -14,7 +14,6 @@ namespace DomainTrackPostPro.Entities
         public TrackingCodeStatus Status { get; set; }
         public DateTime NextSearch { get; set; }
         public int NumberOfTries { get; set; }
-
         public TrackingCode CreateTrackingCode(Guid personId, string code)
         {
             Id = Guid.NewGuid();

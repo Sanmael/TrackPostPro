@@ -10,5 +10,7 @@ namespace DomainTrackPostPro.Interfaces
     public interface IAddressRepository
     {
         public Task CreateNewAddress(Address address);
+        public Task<Address> GetAddressByPersonId(Guid personId);
+
     }
 }

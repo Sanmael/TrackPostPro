@@ -4,6 +4,9 @@ using DomainTrackPostPro.Entities;
 using TrackPostPro.Application.Interfaces;
 using TrackPostPro.Application.DTos;
 using Aplication.Response;
+using TrackPostPro.Application.Service;
+using TrackPostPro.Application.CustomMessages;
+using TrackPostPro.Application.ValidationErrorLogs;
 
 namespace TrackPostPro.Application.Commands.PersonCommands.DeletePerson
 {
@@ -12,12 +15,14 @@ namespace TrackPostPro.Application.Commands.PersonCommands.DeletePerson
         private readonly IPersonService _personService;
         private readonly ITokenService _tokenService;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ILoggerService _loggerService;
 
-        public DeletePersonCommandHandler(IPersonService personService, ITokenService tokenService, IUnitOfWork unitOfWork)
+        public DeletePersonCommandHandler(IPersonService personService, ITokenService tokenService, IUnitOfWork unitOfWork, ILoggerService loggerService)
         {
             _personService = personService;
             _tokenService = tokenService;
             _unitOfWork = unitOfWork;
+            _loggerService = loggerService;
         }
 
         public async Task<BaseResult<Guid>> Handle(DeletePersonCommand request, CancellationToken cancellationToken)
@@ -27,7 +32,7 @@ namespace TrackPostPro.Application.Commands.PersonCommands.DeletePerson
                 PersonDTO person = await _personService.GetPersonById(request.Id);
 
                 if (person == null)
-                    return new BaseResult<Guid>(Guid.Empty, success: false, message: "Pessoa não encontrada")!;
+                    throw new ValidationException(ValidationMessages.PersonNotFound);
 
                 _unitOfWork.BeginTransaction();
 
@@ -39,9 +44,12 @@ namespace TrackPostPro.Application.Commands.PersonCommands.DeletePerson
 
                 return new BaseResult<Guid>(request.Id, success: true);
             }
-            catch
+            catch(Exception ex)
             {
                 _unitOfWork.Rollback();
+
+                await _loggerService.SaveLog(ex, ex.Message, ex.TargetSite!.DeclaringType!.DeclaringType!.Name);
+
                 throw;
             }          
         }

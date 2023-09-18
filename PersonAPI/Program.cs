@@ -30,8 +30,17 @@ builder.Services.AddMediatR(configuration =>
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IPersonService, PersonService>();
 builder.Services.AddScoped<ILoggerService, LoggerService >();
-builder.Services.AddScoped<UserFilterService>();
 builder.Services.AddScoped<IAddresService, AddressService>();
+builder.Services.AddScoped<ICachingService, CachingService>();
+
+//builder.Services.AddScoped<UserFilterService>();
+
+
+builder.Services.AddStackExchangeRedisCache(o =>
+{
+    o.InstanceName = "instance";
+    o.Configuration = "localhost:6379";
+});
 
 Dependences.AddInfrastructure(builder.Services);
 

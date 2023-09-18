@@ -15,13 +15,13 @@ namespace Context.GenericRepository
             _context = context;
         }
       
-        public async Task Insert<T>(T param)
+        public async Task Insert<T>(T entity)
         {
             try
             {
                 string sql = $"INSERT INTO {typeof(T).Name} ({GetColumns<T>()}) VALUES ({GetParameters<T>()})";
 
-                await _context.DbConnection.ExecuteAsync(sql, param, _context.Transaction);
+                await _context.DbConnection.ExecuteAsync(sql, entity, _context.Transaction);
             }
             catch (Exception)
             {
@@ -29,11 +29,11 @@ namespace Context.GenericRepository
             }
         }
 
-        public async Task Update<T>(string query, T param)
+        public async Task Update<T>(string query, T entity)
         {
             try
             {
-                await _context.DbConnection.ExecuteAsync(query, param, _context.Transaction);
+                await _context.DbConnection.ExecuteAsync(query, entity, _context.Transaction);
             }
             catch (Exception)
             {
@@ -41,15 +41,15 @@ namespace Context.GenericRepository
             }
         }
 
-        public async Task Delete<T>(T param)
+        public async Task Delete<T>(T entity)
         {
             try
             {
                 string sql = $"DELETE FROM {typeof(T).Name} WHERE Id = @Id";
 
-                var id = typeof(T).GetProperty("Id")!.GetValue(param, null);
+                object id = typeof(T).GetProperty("Id")!.GetValue(entity, null)!;
 
-                await _context.DbConnection.ExecuteAsync(sql, param, _context.Transaction);
+                await _context.DbConnection.ExecuteAsync(sql, id, _context.Transaction);
             }
             catch (Exception)
             {

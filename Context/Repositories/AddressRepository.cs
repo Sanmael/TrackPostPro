@@ -1,5 +1,7 @@
-﻿using DomainTrackPostPro.Entities;
+﻿using Dapper;
+using DomainTrackPostPro.Entities;
 using DomainTrackPostPro.Interfaces;
+using System.Net;
 
 namespace Context.Repositories
 {
@@ -24,6 +26,20 @@ namespace Context.Repositories
             {
                 throw;
             }            
+        }
+
+        public async Task<Address> GetAddressByPersonId(Guid personId)
+        {            
+            try
+            {
+                string sql = "SELECT * FROM Address WHERE PersonId = @Id";
+
+                return await _context.DbConnection.QueryFirstOrDefaultAsync<Address>(sql: sql, new { Id = personId });
+            }
+            catch
+            {
+                throw;
+            }
         }
     }
 }

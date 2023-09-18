@@ -9,14 +9,12 @@ namespace TrackPostPro.Application.DTos
         public Guid PersonId { get; set; }
         public string Code { get; set; }
         public string Status { get; set; }
-        public TrackingCodeDTO EntityToDto(TrackingCode trackingCode)
+        public TrackingCodeDTO(TrackingCode trackingCode)
         {
             Id = trackingCode.Id;
             PersonId = trackingCode.PersonId;
             Code = trackingCode.Code;
-            Status = trackingCode.Status.ToString();
-
-            return this;
+            Status = trackingCode.Status.ToString();            
         }
     }
 }

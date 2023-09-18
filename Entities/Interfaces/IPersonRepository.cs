@@ -11,8 +11,7 @@ namespace DomainTrackPostPro.Interfaces
     public interface IPersonRepository 
     {
         public Task<Person> GetPersonById(Guid id);
-        public Task<List<Person>> GetPersonListByName(string name);
-            
+        public Task<List<Person>> GetPersonListByName(string name);            
         public Task CreatePerson(Person person);
         public Task UpdatePerson(Person person);
         public Task DeletePerson(Guid id);

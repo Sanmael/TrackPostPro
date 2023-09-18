@@ -9,14 +9,17 @@ namespace DomainTrackPostPro.Entities
 {
     public class Address : BaseEntity
     {
-        public Guid PersonId { get; set; }
-        public string City { get; set; }
-        public string State { get; set; }
-        public string PostalCode { get; set; }
-        public string Neighborhood { get; set; }
-        public string PublicPlace { get; set; }
-        public bool IsPrincipalAddress { get; set; }
-
+        public Guid PersonId { get; private set; }
+        public string City { get; private set; }
+        public string State { get; private set; }
+        public string PostalCode { get; private set; }
+        public string Neighborhood { get; private set; }
+        public string PublicPlace { get; private set; }
+        public bool IsPrincipalAddress { get; private set; }
+        public Address()
+        {
+            
+        }
         public Address(Guid personId, string city, string state, string postalCode, string neighborhood, string publicPlace, bool isPrincipalAddress)
         {
             Id = Guid.NewGuid();
@@ -28,6 +31,11 @@ namespace DomainTrackPostPro.Entities
             PublicPlace = publicPlace;
             IsPrincipalAddress = isPrincipalAddress;
             CreationDate = DateTime.Now;
+            UpdateDate = DateTime.Now;
+        }
+        public void UpdateNewPrincipalAddress()
+        {
+            IsPrincipalAddress = true;
             UpdateDate = DateTime.Now;
         }
     }

@@ -19,7 +19,7 @@ namespace Context.Repositories
         {
             try
             {
-                await _genericRepository.Insert(param: token);
+                await _genericRepository.Insert(token);
             }
             catch
             {
@@ -31,7 +31,7 @@ namespace Context.Repositories
         {
             try
             {
-                await _genericRepository.Delete<Token>(param: token);
+                await _genericRepository.Delete<Token>(token);
             }
             catch
             {
@@ -59,7 +59,7 @@ namespace Context.Repositories
             {
                 string query = "Update Token Set TextClear = @TextClear , HashPass = @HashPass, where PersonId = @PersonId";
 
-                await _genericRepository.Update<Token>(query: query, param: token);
+                await _genericRepository.Update<Token>(query: query, token);
             }
             catch
             {
