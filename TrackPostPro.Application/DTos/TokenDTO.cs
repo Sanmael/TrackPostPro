@@ -2,19 +2,19 @@
 {
     public class TokenDTO
     {
-        public Guid PersonId { get; set; }
+        public Guid UserId { get; set; }
         public string HashPass { get; set; }
         public string TextClear { get; set; }
-        public TokenDTO(Guid personId, string hashPass, string textClear)
+        public TokenDTO(Guid userId, string pass, string textClear)
         {
-            PersonId = personId;
-            HashPass = hashPass;
+            UserId = userId;
+            HashPass = pass;
             TextClear = textClear;
         }
-        public TokenDTO(Guid personId, string hashPass)
+        public TokenDTO(Guid userId, string pass)
         {
-            PersonId = personId;
-            HashPass = hashPass;
+            UserId = userId;
+            HashPass = pass;
         }
     }
 }

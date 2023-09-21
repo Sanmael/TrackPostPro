@@ -2,7 +2,6 @@ using Aplication.Commands.PersonCommands.CreatePerson;
 using Context.Repositories;
 using DependencyInjectionTrackPostPro;
 using FluentValidation.AspNetCore;
-using TrackPostPro.Application.Filters;
 using TrackPostPro.Application.Interfaces;
 using TrackPostPro.Application.Service;
 
@@ -10,10 +9,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers(options =>
-{
-    options.Filters.Add(typeof(UserFilterAttribute));
-});
+//builder.Services.AddControllers(options =>
+//{
+//    options.Filters.Add(typeof(UserFilterAttribute));
+//});
 builder.Services.AddControllers().AddFluentValidation(options =>
 {
     options.RegisterValidatorsFromAssembly(typeof(Program).Assembly);

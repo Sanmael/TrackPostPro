@@ -9,11 +9,7 @@
         public string PostalCode { get; set; } = "";
         public string Neighborhood { get; set; } = "";
         public string PublicPlace { get; set; } = "";
-        public AddressDTO()
-        {
-            
-        }
-        public AddressDTO EntityToDto(Guid id, Guid personId, string city, string state, string postalCode, string neighborhood, string publicPlace)
+        public AddressDTO(Guid id, Guid personId, string city, string state, string postalCode, string neighborhood, string publicPlace)
         {
             Id = id;
             PersonId = personId;
@@ -22,8 +18,6 @@
             PostalCode = postalCode;
             Neighborhood = neighborhood;
             PublicPlace = publicPlace;
-
-            return this;
         }
         public AddressDTO(Guid personId, string city, string state, string postalCode, string neighborhood, string publicPlace)
         {                  

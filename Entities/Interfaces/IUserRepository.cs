@@ -7,10 +7,8 @@ using System.Threading.Tasks;
 
 namespace DomainTrackPostPro.Interfaces
 {
-    public interface IAddressRepository
+    public interface IUserRepository
     {
-        public Task CreateNewAddress(Address address);
-        public Task<Address> GetAddressByPersonId(Guid personId);
-        public Task DeleteAddress(Guid personId);
+        public Task CreateUser(User user);
     }
 }

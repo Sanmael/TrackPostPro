@@ -10,7 +10,7 @@ namespace DomainTrackPostPro.Interfaces
     public interface ITokenRepository 
     {
         public Task CreateToken(Token token);
-        public Task<Token> GetToken(Guid personId);
+        public Task<Token> GetToken(Guid userId);
         public Task ResetCredential(Token token);
         public Task DeleteToken(Token token);
     }

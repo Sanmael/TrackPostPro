@@ -28,6 +28,18 @@ namespace TrackPostPro.Application.Service
             }
         }
 
+        public async Task DeleteAddress(Guid personId)
+        {
+            try
+            {
+                await _addressRepository.DeleteAddress(personId);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         public async Task<AddressDTO?> GetAddressByPersonId(Guid personId)
         {
             try
@@ -37,7 +49,7 @@ namespace TrackPostPro.Application.Service
                 if (address == null)
                     return null;
 
-                return new AddressDTO().EntityToDto(address.Id,address.PersonId, address.City, address.State, address.PostalCode, address.Neighborhood, address.PublicPlace);
+                return new AddressDTO(address.Id, address.PersonId, address.City, address.State, address.PostalCode, address.Neighborhood, address.PublicPlace);
             }
             catch (Exception)
             {

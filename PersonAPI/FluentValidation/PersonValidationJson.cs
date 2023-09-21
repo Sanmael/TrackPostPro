@@ -13,9 +13,7 @@ namespace PersonAPI.FluentValidation
         public PersonValidationJson()
         {
             RuleFor(person => person.Name).MinimumLength(MinimumLength).WithMessage(ErrorMessage.NameLenght);
-            RuleFor(person => person.Age).NotEmpty().WithMessage(ErrorMessage.Requiredfield);
-            RuleFor(person => person.Password).NotEmpty().WithMessage(ErrorMessage.Requiredfield);
-            RuleFor(person => person.Age).Must(age => age > MinimumAge && age < MaximumAge).WithMessage(string.Format(ErrorMessage.InvalidAgeMessage, MinimumAge, MaximumAge));
+            RuleFor(person => person.BirthDate).NotEmpty().WithMessage(ErrorMessage.Requiredfield);
         }
     }
 }

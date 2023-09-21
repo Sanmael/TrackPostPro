@@ -1,4 +1,5 @@
 ﻿using Context.Repositories;
+using Context.UOW;
 using DomainTrackPostPro.Entities;
 using DomainTrackPostPro.Interfaces;
 using System.Transactions;
@@ -10,30 +11,35 @@ namespace TrackPostPro.Application.Service
     public class PersonService : IPersonService
     {
         private readonly IPersonRepository _personRepository;
-        private readonly ITokenService _tokenService;
         private readonly IAddresService _addresService;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public PersonService(IPersonRepository personRepository, ITokenService tokenService, IAddresService addresService)
+        public PersonService(IPersonRepository personRepository, IAddresService addresService, IUnitOfWork unitOfWork)
         {
             _personRepository = personRepository;
-            _tokenService = tokenService;
             _addresService = addresService;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task CreatePerson(PersonDTO personDTO)
         {
+            Person person = personDTO.MapperPersonEntity();
+
             try
             {
-                Person person = personDTO.MapperToEntity();
+                _unitOfWork.BeginTransaction();
 
                 await _personRepository.CreatePerson(person);
 
-                await _tokenService.CreateToken(personDTO.Token);
+                personDTO.Address.PersonId = person.Id;
 
                 await _addresService.CreateNewAddres(personDTO.Address);
+
+                _unitOfWork.Commit();
             }
             catch(Exception) 
-            {                
+            {
+                _unitOfWork.Rollback();
                 throw;
             }
         }
@@ -41,11 +47,19 @@ namespace TrackPostPro.Application.Service
         public async Task DeletePerson(PersonDTO personDTO)
         {
             try
-            {
+            {                
+                _unitOfWork.BeginTransaction();
+
                 await _personRepository.DeletePerson(personDTO.Id);
+
+                await _addresService.DeleteAddress(personDTO.Id);
+
+                _unitOfWork.Commit();
+
             }
             catch
             {
+                _unitOfWork.Rollback();
                 throw;
             }
         }
@@ -57,7 +71,7 @@ namespace TrackPostPro.Application.Service
             if (person == null)
                 return null;
 
-            PersonDTO personDTO = new PersonDTO().EntityToDto(person);
+            PersonDTO personDTO = new PersonDTO(person.Id,person.Name,person.BirthDate);
 
             personDTO.Address = await _addresService.GetAddressByPersonId(person.Id);
 
@@ -72,7 +86,7 @@ namespace TrackPostPro.Application.Service
 
             Parallel.ForEach(persons, person =>
             {
-                result.Add(new PersonDTO().EntityToDto(person));
+                result.Add(new PersonDTO(person.Id,person.Name,person.BirthDate));
             });
 
             return result;

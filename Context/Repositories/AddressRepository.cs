@@ -28,6 +28,18 @@ namespace Context.Repositories
             }            
         }
 
+        public async Task DeleteAddress(Guid personId)
+        {
+            try
+            {
+                await _genericRepository.Delete(personId);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
         public async Task<Address> GetAddressByPersonId(Guid personId)
         {            
             try

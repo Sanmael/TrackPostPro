@@ -31,14 +31,14 @@ namespace PersonAPI.Controllers
         {
             try
             {
-                BaseResult<Guid> result = await _mediator.Send(query);
+                BaseResult result = await _mediator.Send(query);
 
                 if (result.Success)
-                    return CreatedAtAction(nameof(GetPersonById), new { id = result.Data }, result);
+                    return StatusCode(StatusCodes.Status201Created, result.Message);
 
                 return BadRequest(result.Message);
             }
-            catch (TrackPostPro.Application.ValidationErrorLogs.ValidationException ex)
+            catch (ValidationException ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -52,7 +52,6 @@ namespace PersonAPI.Controllers
         {
             BaseResult<PersonDTO> baseResult;
 
-            GetPersonCommand query = new GetPersonCommand() { Id = id };
             try
             {                              
                 var result = await _cachingService.GetAsync(id.ToString());
@@ -63,6 +62,8 @@ namespace PersonAPI.Controllers
 
                     return Ok(baseResult.Data);
                 }
+
+                GetPersonCommand query = new GetPersonCommand() { Id = id };
 
                 baseResult = await _mediator.Send(query);
 
@@ -77,6 +78,10 @@ namespace PersonAPI.Controllers
             catch (ValidationException ex)
             {
                 return NotFound(ex.Message);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ErrorMessage.InternalServerErrorMessage);
             }
         }
         [HttpGet]

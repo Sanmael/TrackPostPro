@@ -1,6 +1,7 @@
 ﻿using System.Data;
 using System.Reflection;
 using Dapper;
+using DomainTrackPostPro.Entities;
 using DomainTrackPostPro.Interfaces;
 using static Dapper.SqlMapper;
 
@@ -14,14 +15,16 @@ namespace Context.GenericRepository
         {
             _context = context;
         }
-      
+
         public async Task Insert<T>(T entity)
         {
             try
             {
-                string sql = $"INSERT INTO {typeof(T).Name} ({GetColumns<T>()}) VALUES ({GetParameters<T>()})";
+                string sql = $"INSERT INTO [{typeof(T).Name}] ({GetColumns<T>()}) OUTPUT INSERTED.Id VALUES ({GetParameters<T>()})";
 
-                await _context.DbConnection.ExecuteAsync(sql, entity, _context.Transaction);
+                Guid id = await _context.DbConnection.QuerySingleAsync<Guid>(sql, entity, _context.Transaction);
+
+                typeof(T).GetProperty("Id")!.SetValue(entity, id);
             }
             catch (Exception)
             {
@@ -58,13 +61,13 @@ namespace Context.GenericRepository
         }
         private string GetColumns<T>()
         {
-            PropertyInfo[] properties = typeof(T).GetProperties();
+            PropertyInfo[] properties = typeof(T).GetProperties().Where(x => x.Name != "Id").ToArray();
             return string.Join(", ", properties.Select(p => p.Name));
         }
 
         private string GetParameters<T>()
         {
-            PropertyInfo[] properties = typeof(T).GetProperties();
+            PropertyInfo[] properties = typeof(T).GetProperties().Where(x => x.Name != "Id").ToArray();            
             return string.Join(", ", properties.Select(p => $"@{p.Name}"));
         }
     }

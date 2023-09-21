@@ -8,8 +8,8 @@ namespace TrackPostPro.Application.Interfaces
         public Task CreateToken(TokenDTO tokenDTO);
         public string CreateHash(string pass, string hash);
         public Task ResetTokenAsync(TokenDTO tokenDTO);
-        public Task<TokenDTO> GetToken(Guid personId);
-        public Task DeleteToken(Guid personId);
+        public Task<TokenDTO> GetToken(Guid userId);
+        public Task DeleteToken(Guid userId);
 
     }
 }

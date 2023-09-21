@@ -39,13 +39,13 @@ namespace Context.Repositories
             }
         }
 
-        public async Task<Token> GetToken(Guid personId)
+        public async Task<Token> GetToken(Guid userId)
         {
             try
             {
-                string query = "SELECT * FROM Token WHERE PersonId = @Id";
+                string query = "SELECT * FROM Token WHERE UserId = @Id";
 
-                return await _context.DbConnection.QueryFirstOrDefaultAsync<Token>(sql: query, param: new { Id = personId });
+                return await _context.DbConnection.QueryFirstOrDefaultAsync<Token>(sql: query, param: new { Id = userId });
             }
             catch
             {
@@ -57,7 +57,7 @@ namespace Context.Repositories
         {
             try
             {
-                string query = "Update Token Set TextClear = @TextClear , HashPass = @HashPass, where PersonId = @PersonId";
+                string query = "Update Token Set TextClear = @TextClear , HashPass = @HashPass, where UserId = @UserId";
 
                 await _genericRepository.Update<Token>(query: query, token);
             }

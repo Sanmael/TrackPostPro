@@ -8,7 +8,9 @@ using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Linq.Expressions;
+using System.Xml.Linq;
 
 namespace Context.Repositories
 {
@@ -28,6 +30,7 @@ namespace Context.Repositories
             try
             {
                 await _genericRepository.Insert(person);
+               
             }
             catch
             {
@@ -74,9 +77,18 @@ namespace Context.Repositories
                 throw;
             }
         }
-        public Task UpdatePerson(Person person)
+        public async Task UpdatePerson(Person person)
         {
-            throw new NotImplementedException();
+            try
+            {
+                string sql = $"SELECT * FROM Person WHERE Name Like ''";
+
+                await _genericRepository.Update(sql,person);
+            }
+            catch
+            {
+                throw;
+            }
         }
     }
 }

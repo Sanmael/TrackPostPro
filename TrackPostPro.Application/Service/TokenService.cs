@@ -21,7 +21,7 @@ namespace TrackPostPro.Application.Service
         {
             string hashToken = GenerateRandomHash();
 
-            Token token = new Token(tokenDTO.PersonId, hashToken, CreateHash(tokenDTO.HashPass, hashToken));
+            Token token = new Token(tokenDTO.UserId, hashToken, CreateHash(tokenDTO.HashPass, hashToken));
 
             await _tokenRepository.CreateToken(token);
         }
@@ -40,7 +40,7 @@ namespace TrackPostPro.Application.Service
         {
             Random random = new Random();
 
-            int length = random.Next(6, 9);
+            int length = random.Next(6,6);
 
             StringBuilder hashBuilder = new StringBuilder();
 
@@ -56,7 +56,7 @@ namespace TrackPostPro.Application.Service
 
         public async Task ResetTokenAsync(TokenDTO tokenDTO)
         {
-            Token token = await _tokenRepository.GetToken(tokenDTO.PersonId);
+            Token token = await _tokenRepository.GetToken(tokenDTO.UserId);
 
             string hashToken = GenerateRandomHash();
 
@@ -65,18 +65,18 @@ namespace TrackPostPro.Application.Service
             await _tokenRepository.ResetCredential(token);
         }
 
-        public async Task<TokenDTO> GetToken(Guid personId)
+        public async Task<TokenDTO> GetToken(Guid userId)
         {
-            Token token = await _tokenRepository.GetToken(personId);
+            Token token = await _tokenRepository.GetToken(userId);
 
-            return new TokenDTO(token.PersonId, token.HashPass, token.TextClear);
+            return new TokenDTO(token.UserId, token.HashPass, token.TextClear);
         }
 
-        public async Task DeleteToken(Guid personId)
+        public async Task DeleteToken(Guid userId)
         {
             try
             {
-                Token token = await _tokenRepository.GetToken(personId);
+                Token token = await _tokenRepository.GetToken(userId);
 
                 if (token != null)
                     await _tokenRepository.DeleteToken(token);

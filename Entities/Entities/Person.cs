@@ -9,18 +9,21 @@ namespace DomainTrackPostPro.Entities
     public class Person : BaseEntity
     {
         public string Name { get; private set; } 
-        public int Age { get; private set; }
+        public DateTime BirthDate { get; private set; }
+        public string PhoneNumber { get; private set; } = string.Empty;
+        public string? NickName { get; private set; }
+        public string? ProfilePicture { get; private set; }
         public Person()
         {
                 
         }
-        public Person(Guid id ,string name, int age)
+        public Person(Guid id ,string name, DateTime birthDate)
         {
             Id = id;
             CreationDate = DateTime.Now;
             UpdateDate = DateTime.Now;
             Name = name;
-            Age = age;
+            BirthDate = birthDate;
         }
     }
 }
