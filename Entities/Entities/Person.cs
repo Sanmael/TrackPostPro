@@ -17,9 +17,8 @@ namespace DomainTrackPostPro.Entities
         {
                 
         }
-        public Person(Guid id ,string name, DateTime birthDate)
-        {
-            Id = id;
+        public Person(string name, DateTime birthDate)
+        {            
             CreationDate = DateTime.Now;
             UpdateDate = DateTime.Now;
             Name = name;

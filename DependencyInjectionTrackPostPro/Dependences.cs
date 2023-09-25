@@ -46,7 +46,7 @@ namespace DependencyInjectionTrackPostPro
         {
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IPersonService, PersonService>();
-            services.AddScoped<ILoggerService, LoggerService>();
+            services.AddScoped<ILoggerService, DiscordLoggerService>();
             services.AddScoped<IAddresService, AddressService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ICachingService, CachingService>();

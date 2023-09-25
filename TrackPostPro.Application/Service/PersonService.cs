@@ -1,10 +1,8 @@
-﻿using Context.Repositories;
-using Context.UOW;
-using DomainTrackPostPro.Entities;
+﻿using DomainTrackPostPro.Entities;
 using DomainTrackPostPro.Interfaces;
-using System.Transactions;
 using TrackPostPro.Application.DTos;
 using TrackPostPro.Application.Interfaces;
+using TrackPostPro.Application.ValidationErrorLogs;
 
 namespace TrackPostPro.Application.Service
 {
@@ -22,24 +20,28 @@ namespace TrackPostPro.Application.Service
         }
 
         public async Task CreatePerson(PersonDTO personDTO)
-        {
-            Person person = personDTO.MapperPersonEntity();
-
+        {                                                              
             try
             {
+                Person person = personDTO.MapperPersonEntity();
+
                 _unitOfWork.BeginTransaction();
 
                 await _personRepository.CreatePerson(person);
 
                 personDTO.Address.PersonId = person.Id;
+                personDTO.Id = person.Id;
 
                 await _addresService.CreateNewAddres(personDTO.Address);
 
+
+
                 _unitOfWork.Commit();
             }
-            catch(Exception) 
+            catch (Exception)
             {
                 _unitOfWork.Rollback();
+
                 throw;
             }
         }
@@ -47,7 +49,7 @@ namespace TrackPostPro.Application.Service
         public async Task DeletePerson(PersonDTO personDTO)
         {
             try
-            {                
+            {
                 _unitOfWork.BeginTransaction();
 
                 await _personRepository.DeletePerson(personDTO.Id);
@@ -71,7 +73,7 @@ namespace TrackPostPro.Application.Service
             if (person == null)
                 return null;
 
-            PersonDTO personDTO = new PersonDTO(person.Id,person.Name,person.BirthDate);
+            PersonDTO personDTO = new PersonDTO(person.Id, person.Name, person.BirthDate);
 
             personDTO.Address = await _addresService.GetAddressByPersonId(person.Id);
 
@@ -86,7 +88,7 @@ namespace TrackPostPro.Application.Service
 
             Parallel.ForEach(persons, person =>
             {
-                result.Add(new PersonDTO(person.Id,person.Name,person.BirthDate));
+                result.Add(new PersonDTO(person.Id, person.Name, person.BirthDate));
             });
 
             return result;

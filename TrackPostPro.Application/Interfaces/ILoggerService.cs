@@ -2,6 +2,6 @@
 {
     public interface ILoggerService
     {
-        public Task SaveLog(Exception ex, string message, string serviceName);
+        public Task SaveLog(Exception ex, string message, string? serviceName);
     }
 }

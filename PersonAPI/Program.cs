@@ -1,9 +1,10 @@
-using Aplication.Commands.PersonCommands.CreatePerson;
-using Context.Repositories;
 using DependencyInjectionTrackPostPro;
 using FluentValidation.AspNetCore;
+using TrackPostPro.Application.Filters;
 using TrackPostPro.Application.Interfaces;
+using TrackPostPro.Application.Interfaces.Validation;
 using TrackPostPro.Application.Service;
+using TrackPostPro.Application.Validations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,16 +22,19 @@ builder.Services.AddControllers().AddFluentValidation(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddMediatR(configuration =>
+
+builder.Services.AddControllersWithViews(options =>
 {
-    configuration.RegisterServicesFromAssemblies(typeof(CreatePersonCommand).Assembly);
+    options.Filters.Add(typeof(LogExceptionFilter)); // Adicione o filtro aqui
 });
 
+builder.Services.AddScoped<LogExceptionFilter>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IPersonService, PersonService>();
-builder.Services.AddScoped<ILoggerService, LoggerService >();
+builder.Services.AddScoped<LoggerService >();
 builder.Services.AddScoped<IAddresService, AddressService>();
 builder.Services.AddScoped<ICachingService, CachingService>();
+builder.Services.AddScoped<IModelValidation, ModelValidation>();
 
 //builder.Services.AddScoped<UserFilterService>();
 
@@ -51,7 +55,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

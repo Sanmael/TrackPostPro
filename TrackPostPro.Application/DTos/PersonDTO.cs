@@ -9,18 +9,18 @@ namespace TrackPostPro.Application.DTos
         public string Name { get; set; }
         public DateTime BirthDate { get; set; }
         public AddressDTO Address { get; set; }
-        public PersonDTO(string name, DateTime birthDate,string city, string state, string postalCode, string neighborhood, string publicPlace)
+        public PersonDTO(string name, DateTime birthDate, string postalCode)
         {
             Name = name;
             BirthDate = birthDate;
-            Address = new AddressDTO(Id, city, state, postalCode, neighborhood, publicPlace);
+            Address = new AddressDTO(postalCode);
         }
         public PersonDTO()
         {
             
         }
        
-        public Person MapperPersonEntity() => new Person(Id,Name, BirthDate);
+        public Person MapperPersonEntity() => new Person(Name, BirthDate);
 
         public PersonDTO(Guid personId, string name, DateTime birthDate)
         {

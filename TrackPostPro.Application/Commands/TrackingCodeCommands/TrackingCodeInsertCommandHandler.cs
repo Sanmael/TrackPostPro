@@ -14,7 +14,7 @@ namespace TrackPostPro.Application.Commands.TrackingCodeCommands
             {
                 TrackingCode trackingCode = new TrackingCode().CreateTrackingCode(request.PersonId, request.Code);
 
-                return new BaseResult<Guid>(trackingCode.Id, success : true, "teste");
+                return new BaseResult<Guid>(trackingCode.Id, "teste", success : true);
             }
             catch
             {

@@ -1,15 +1,13 @@
-﻿using Aplication.Commands.PersonCommands.CreatePerson;
-using Aplication.Response;
+﻿using Aplication.Response;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using TrackPostPro.Application.Commands.PersonCommands.DeletePerson;
-using TrackPostPro.Application.Commands.PersonCommands.GetAllPerson;
-using TrackPostPro.Application.Commands.PersonCommands.GetPerson;
 using TrackPostPro.Application.CustomMessages;
 using TrackPostPro.Application.DTos;
+using TrackPostPro.Application.Filters;
 using TrackPostPro.Application.Interfaces;
-using TrackPostPro.Application.ValidationErrorLogs;
+using TrackPostPro.Application.Interfaces.Validation;
+using TrackPostPro.Application.Requests;
 
 namespace PersonAPI.Controllers
 {
@@ -17,103 +15,85 @@ namespace PersonAPI.Controllers
     [ApiController]
     public class PersonController : ControllerBase
     {
-        private readonly IMediator _mediator;
         private readonly ICachingService _cachingService;
+        private readonly IPersonService _personService;
+        private readonly IModelValidation _modelValidation;
 
-        public PersonController(IMediator mediator, ICachingService cachingService)
+        public PersonController(ICachingService cachingService, IPersonService personService, IModelValidation modelValidation)
         {
-            _mediator = mediator;
             _cachingService = cachingService;
+            _personService = personService;
+            _modelValidation = modelValidation;
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateNewPersonAsync(CreatePersonCommand query)
+        [ServiceFilter(typeof(LogExceptionFilter))]
+        public async Task<IActionResult> CreateNewPersonAsync(PersonRequest personRequest)
         {
-            try
-            {
-                BaseResult result = await _mediator.Send(query);
+            PersonDTO person = new PersonDTO(personRequest.Name, personRequest.BirthDate, personRequest.PostalCode);
 
-                if (result.Success)
-                    return StatusCode(StatusCodes.Status201Created, result.Message);
+            BaseResult<PersonDTO> validation = await _modelValidation.PersonValidation(person);
 
-                return BadRequest(result.Message);
-            }
-            catch (ValidationException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ErrorMessage.InternalServerErrorMessage);
-            }
+            if (!validation.Success)
+                return BadRequest(validation.Message);
+
+            await _personService.CreatePerson(validation.Data!);
+
+            return CreatedAtAction(nameof(GetPersonById), new { id = validation.Data!.Id }, validation.Data);
         }
+
+        //refatorar dps
         [HttpGet("{id}")]
+        [ServiceFilter(typeof(LogExceptionFilter))]
         public async Task<IActionResult> GetPersonById(Guid id)
         {
-            BaseResult<PersonDTO> baseResult;
+            PersonDTO personDTO = new PersonDTO();
+             
+            var result = await _cachingService.GetAsync(id.ToString());
 
-            try
-            {                              
-                var result = await _cachingService.GetAsync(id.ToString());
-
-                if (!string.IsNullOrWhiteSpace(result))
-                {
-                    baseResult = JsonConvert.DeserializeObject<BaseResult<PersonDTO>>(result)!;
-
-                    return Ok(baseResult.Data);
-                }
-
-                GetPersonCommand query = new GetPersonCommand() { Id = id };
-
-                baseResult = await _mediator.Send(query);
-
-                if (baseResult.Success)
-                {
-                    await _cachingService.SetAsync(id.ToString(), JsonConvert.SerializeObject(baseResult));
-                    return Ok(baseResult.Data);
-                }
-
-                return NotFound(baseResult.Message);
-            }
-            catch (ValidationException ex)
+            if (!string.IsNullOrWhiteSpace(result))
             {
-                return NotFound(ex.Message);
+                personDTO = JsonConvert.DeserializeObject<PersonDTO>(result)!;
+
+                return Ok(personDTO);
             }
-            catch (Exception)
+
+            personDTO = await _personService.GetPersonById(id);
+
+            if (personDTO != null)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, ErrorMessage.InternalServerErrorMessage);
+                await _cachingService.SetAsync(id.ToString(), JsonConvert.SerializeObject(personDTO));
+                return Ok(personDTO);
             }
+
+            return NotFound();
         }
+
         [HttpGet]
+        [ServiceFilter(typeof(LogExceptionFilter))]
         public async Task<IActionResult> GetPersonsByName(string name)
         {
-            try
-            {
-                GetAllPersonByNameCommand query = new GetAllPersonByNameCommand() { Name = name };
+            List<PersonDTO> personDtos = await _personService.GetPersonsByName(name);
 
-                BaseResult<List<PersonDTO>> result = await _mediator.Send(query);
+            if (!personDtos.Any())
+                return NotFound(ValidationMessages.NoPeopleFoundWithSpecifiedName);
 
-                if (result.Success)
-                    return Ok(result.Data);
-
-                return NotFound(result.Message);
-            }
-            catch (ValidationException ex)
-            {
-                return NotFound(ex.Message);
-            }
+            return Ok(personDtos);
         }
+
         [HttpDelete("{id}")]
+        [ServiceFilter(typeof(LogExceptionFilter))]
         public async Task<IActionResult> DeletePerson(Guid id)
         {
-            DeletePersonCommand query = new DeletePersonCommand() { Id = id };
+            PersonDTO personDto = await _personService.GetPersonById(id);
 
-            BaseResult<Guid> result = await _mediator.Send(query);
+            if (personDto == null)
+                return NotFound(ValidationMessages.PersonNotFound);
 
-            if (result.Success)
-                return NoContent();
+            await _personService.DeletePerson(personDto);
 
-            return NotFound(result.Message);
+            return StatusCode(StatusCodes.Status204NoContent);
         }
+
     }
 }

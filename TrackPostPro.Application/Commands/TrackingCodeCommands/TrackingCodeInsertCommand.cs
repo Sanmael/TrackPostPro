@@ -6,6 +6,6 @@ namespace TrackPostPro.Application.Commands.TrackingCodeCommands
     public class TrackingCodeInsertCommand : IRequest<BaseResult<Guid>>
     {
         public Guid PersonId { get; set; }
-        public string Code { get; set; }
+        public string Code { get; set; } = string.Empty;
     }
 }

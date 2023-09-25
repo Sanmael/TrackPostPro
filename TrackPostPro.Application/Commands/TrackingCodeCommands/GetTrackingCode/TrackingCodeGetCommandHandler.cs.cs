@@ -10,10 +10,8 @@ namespace TrackPostPro.Application.Commands.TrackingCodeCommands.GetTrackingCode
     {
         public async Task<BaseResult<TrackingCodeDTO>> Handle(TrackingCodeGetCommand request, CancellationToken cancellationToken)
         {
-           
-                return new BaseResult<TrackingCodeDTO>(null, success: false, message: "Codigo de Rastreio não encontrado.");
 
-
+            return new BaseResult<TrackingCodeDTO>(success: false, message: "Codigo de Rastreio não encontrado.");
         }
     }
 }

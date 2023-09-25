@@ -27,68 +27,32 @@ namespace Context.Repositories
 
         public async Task CreatePerson(Person person)
         {
-            try
-            {
-                await _genericRepository.Insert(person);
-               
-            }
-            catch
-            {
-                throw;
-            }
+            await _genericRepository.Insert(person);
         }
 
         public async Task DeletePerson(Guid id)
         {
-            try
-            {
-                await _genericRepository.Delete(new { Id = id });
-            }
-            catch
-            {
-                throw;
-            }
+            await _genericRepository.Delete(new { Id = id });
         }
 
         public async Task<Person> GetPersonById(Guid id)
         {
-            try
-            {
-                string sql = "SELECT * FROM Person WHERE Id = @Id";
+            string sql = "SELECT * FROM Person WHERE Id = @Id";
 
-                return await _context.DbConnection.QueryFirstOrDefaultAsync<Person>(sql, param: new { Id = id });
-            }
-            catch
-            {
-                throw;
-            }
+            return await _context.DbConnection.QueryFirstOrDefaultAsync<Person>(sql, param: new { Id = id });
         }
 
         public async Task<List<Person>> GetPersonListByName(string name)
         {
-            try
-            {
-                string sql = $"SELECT * FROM Person WHERE Name Like '%{name}%'";
+            string sql = $"SELECT * FROM Person WHERE Name Like '%{name}%'";
 
-                return (List<Person>)await _context.DbConnection.QueryAsync<Person>(sql);
-            }
-            catch
-            {
-                throw;
-            }
+            return (List<Person>)await _context.DbConnection.QueryAsync<Person>(sql);
         }
         public async Task UpdatePerson(Person person)
         {
-            try
-            {
-                string sql = $"SELECT * FROM Person WHERE Name Like ''";
+            string sql = $"SELECT * FROM Person WHERE Name Like ''";
 
-                await _genericRepository.Update(sql,person);
-            }
-            catch
-            {
-                throw;
-            }
+            await _genericRepository.Update(sql, person);
         }
     }
 }
