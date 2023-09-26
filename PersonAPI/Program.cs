@@ -1,5 +1,6 @@
 using DependencyInjectionTrackPostPro;
 using FluentValidation.AspNetCore;
+using TrackPostPro.Application.ExternalServices;
 using TrackPostPro.Application.Filters;
 using TrackPostPro.Application.Interfaces;
 using TrackPostPro.Application.Interfaces.Validation;
@@ -29,14 +30,15 @@ builder.Services.AddControllersWithViews(options =>
 });
 
 builder.Services.AddScoped<LogExceptionFilter>();
+builder.Services.AddScoped<UserFilterAttribute>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IPersonService, PersonService>();
 builder.Services.AddScoped<LoggerService >();
 builder.Services.AddScoped<IAddresService, AddressService>();
 builder.Services.AddScoped<ICachingService, CachingService>();
 builder.Services.AddScoped<IModelValidation, ModelValidation>();
-
-//builder.Services.AddScoped<UserFilterService>();
+builder.Services.AddScoped<IAPIRequester, APIRequester>();
+builder.Services.AddScoped<UserFilterService>();
 
 
 builder.Services.AddStackExchangeRedisCache(o =>

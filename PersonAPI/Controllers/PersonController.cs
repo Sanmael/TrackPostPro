@@ -1,5 +1,4 @@
 ﻿using Aplication.Response;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using TrackPostPro.Application.CustomMessages;
@@ -27,28 +26,28 @@ namespace PersonAPI.Controllers
         }
 
         [HttpPost]
+        [ServiceFilter(typeof(UserFilterAttribute))]
         [ServiceFilter(typeof(LogExceptionFilter))]
         public async Task<IActionResult> CreateNewPersonAsync(PersonRequest personRequest)
         {
-            PersonDTO person = new PersonDTO(personRequest.Name, personRequest.BirthDate, personRequest.PostalCode);
+            BaseResult<PersonDTO> person = (BaseResult<PersonDTO>)await _modelValidation.PersonValidation(personRequest);
 
-            BaseResult<PersonDTO> validation = await _modelValidation.PersonValidation(person);
+            if (!person.Success)
+                return BadRequest(person.Message);
 
-            if (!validation.Success)
-                return BadRequest(validation.Message);
+            await _personService.CreatePerson(person.Data!);
 
-            await _personService.CreatePerson(validation.Data!);
-
-            return CreatedAtAction(nameof(GetPersonById), new { id = validation.Data!.Id }, validation.Data);
+            return CreatedAtAction(nameof(GetPersonById), new { id = person.Data!.Id }, person.Data);
         }
 
         //refatorar dps
         [HttpGet("{id}")]
+        [ServiceFilter(typeof(UserFilterAttribute))]
         [ServiceFilter(typeof(LogExceptionFilter))]
         public async Task<IActionResult> GetPersonById(Guid id)
         {
             PersonDTO personDTO = new PersonDTO();
-             
+
             var result = await _cachingService.GetAsync(id.ToString());
 
             if (!string.IsNullOrWhiteSpace(result))
@@ -62,26 +61,43 @@ namespace PersonAPI.Controllers
 
             if (personDTO != null)
             {
-                await _cachingService.SetAsync(id.ToString(), JsonConvert.SerializeObject(personDTO));
+                await _cachingService.SetAsync((nameof(GetPersonById) + id), JsonConvert.SerializeObject(personDTO));
                 return Ok(personDTO);
             }
 
             return NotFound();
         }
 
+        //refatorar dps
         [HttpGet]
+        [ServiceFilter(typeof(UserFilterAttribute))]
         [ServiceFilter(typeof(LogExceptionFilter))]
         public async Task<IActionResult> GetPersonsByName(string name)
         {
-            List<PersonDTO> personDtos = await _personService.GetPersonsByName(name);
+            List<PersonDTO> personDtos = new List<PersonDTO>();
+
+            var result = await _cachingService.GetAsync((nameof(GetPersonsByName) + name));
+
+            if (!string.IsNullOrWhiteSpace(result))
+            {
+                personDtos = JsonConvert.DeserializeObject<List<PersonDTO>>(result)!;
+
+                return Ok(personDtos);
+            }
+
+            personDtos = await _personService.GetPersonsByName(name);
 
             if (!personDtos.Any())
                 return NotFound(ValidationMessages.NoPeopleFoundWithSpecifiedName);
 
+            await _cachingService.SetAsync((nameof(GetPersonsByName) + name), JsonConvert.SerializeObject(personDtos));
+
             return Ok(personDtos);
+
         }
 
         [HttpDelete("{id}")]
+        [ServiceFilter(typeof(UserFilterAttribute))]
         [ServiceFilter(typeof(LogExceptionFilter))]
         public async Task<IActionResult> DeletePerson(Guid id)
         {

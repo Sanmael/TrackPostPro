@@ -2,26 +2,30 @@
 using TrackPostPro.Application.DTos;
 using TrackPostPro.Application.Interfaces;
 using TrackPostPro.Application.Interfaces.Validation;
+using TrackPostPro.Application.Requests;
+using TrackPostPro.Application.Response;
 
 namespace TrackPostPro.Application.Validations
 {
     public class ModelValidation : IModelValidation
     {
-        private readonly IAddresService _addresService;
+        private readonly IAPIRequester _apiRequester;
 
-        public ModelValidation(IAddresService addresService)
+        public ModelValidation(IAPIRequester apiRequester)
         {
-            _addresService = addresService;
+            _apiRequester = apiRequester;
         }
 
-        public async Task<BaseResult<PersonDTO>> PersonValidation(PersonDTO personDTO)
+        public async Task<IBaseResult<PersonDTO>> PersonValidation(PersonRequest personRequest)
         {
-            personDTO.Address = await _addresService.GetAddress(personDTO.Address.PostalCode);
+            BaseResult<AddressDTO> cepValidation = (BaseResult<AddressDTO>)await _apiRequester.GetAddressByExternalAPI(personRequest.PostalCode);
 
-            if (personDTO.Address == null)
-                return new BaseResult<PersonDTO>(success: false, message: "Cep não encontrado.");
+            if (!cepValidation.Success)
+                return new BaseResult<PersonDTO>(message: cepValidation.Message!, success: false);
 
-            return new BaseResult<PersonDTO>(personDTO, success: true);
+            PersonDTO personDTO = new PersonDTO(personRequest.Name, personRequest.BirthDate, cepValidation.Data!);
+
+            return new BaseResult<PersonDTO>(personDTO);
         }
     }
 }

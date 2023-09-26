@@ -1,8 +1,9 @@
-﻿using Aplication.Commands.UserCommands;
-using Aplication.Response;
+﻿using Aplication.Response;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using TrackPostPro.Application.CustomMessages;
+using TrackPostPro.Application.DTos;
+using TrackPostPro.Application.Interfaces;
 
 namespace UserAPI.Controllers
 {
@@ -10,24 +11,21 @@ namespace UserAPI.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly IMediator _mediator;
+        private readonly IUserService _userService;
 
-        public UserController(IMediator mediator)
+        public UserController(IUserService userService)
         {
-            _mediator = mediator;
+            _userService = userService;
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateUser(CreateUserCommand createUserCommand)
+        public async Task<IActionResult> CreateUser(UserDTO userDTO)
         {
             try
             {
-                BaseResult result = await _mediator.Send(createUserCommand);
+                await _userService.CreateUser(userDTO);
 
-                if (result.Success)
-                    return StatusCode(StatusCodes.Status201Created, result.Message);
-
-                return BadRequest(result.Message);
+                return Ok(userDTO);
             }          
             catch (Exception)
             {

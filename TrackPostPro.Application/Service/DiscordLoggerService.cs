@@ -33,7 +33,7 @@ namespace TrackPostPro.Application.Service
 
                 content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
-                HttpResponseMessage response = await httpClient.PostAsync(_configuration.GetValue<string>("DiscordLink"), content);
+                HttpResponseMessage response = await httpClient.PostAsync(_configuration.GetValue<string>("DiscordUrl"), content);
 
                 if (!response.IsSuccessStatusCode)
                 {

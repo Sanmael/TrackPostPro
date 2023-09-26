@@ -7,7 +7,5 @@ namespace TrackPostPro.Application.Interfaces
         public Task CreateNewAddres(AddressDTO addressDTO);
         public Task<AddressDTO> GetAddressByPersonId(Guid personId);
         public Task DeleteAddress(Guid personId);
-        public Task<AddressDTO?> GetAddress(string postalCode);
-
     }
 }

@@ -2,7 +2,6 @@
 using DomainTrackPostPro.Interfaces;
 using TrackPostPro.Application.DTos;
 using TrackPostPro.Application.Interfaces;
-using TrackPostPro.Application.ValidationErrorLogs;
 
 namespace TrackPostPro.Application.Service
 {
@@ -20,7 +19,7 @@ namespace TrackPostPro.Application.Service
         }
 
         public async Task CreatePerson(PersonDTO personDTO)
-        {                                                              
+        {
             try
             {
                 Person person = personDTO.MapperPersonEntity();
@@ -33,8 +32,6 @@ namespace TrackPostPro.Application.Service
                 personDTO.Id = person.Id;
 
                 await _addresService.CreateNewAddres(personDTO.Address);
-
-
 
                 _unitOfWork.Commit();
             }
@@ -84,14 +81,14 @@ namespace TrackPostPro.Application.Service
         {
             List<Person> persons = await _personRepository.GetPersonListByName(name);
 
-            List<PersonDTO> result = new List<PersonDTO>();
+            List<PersonDTO> personList = new List<PersonDTO>();
 
-            Parallel.ForEach(persons, person =>
+            foreach (Person person in persons)
             {
-                result.Add(new PersonDTO(person.Id, person.Name, person.BirthDate));
-            });
+                personList.Add(new PersonDTO(person.Id, person.Name, person.BirthDate, await _addresService.GetAddressByPersonId(person.Id)));
+            }
 
-            return result;
+            return personList;
         }
     }
 }

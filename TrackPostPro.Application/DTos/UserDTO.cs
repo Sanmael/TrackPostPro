@@ -6,6 +6,10 @@
         public string UserName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public TokenDTO Token { get; set; }
+        public UserDTO()
+        {
+            
+        }
 
         public UserDTO(string userName, string password, string email)
         {

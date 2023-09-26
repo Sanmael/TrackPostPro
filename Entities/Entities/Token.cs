@@ -26,5 +26,9 @@ namespace DomainTrackPostPro.Entities
             HashPass = hashPass;
             UpdateDate = DateTime.Now;
         }
+        public Token()
+        {
+            
+        }
     }
 }
